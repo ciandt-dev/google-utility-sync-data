@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const PubSub = require('@google-cloud/pubsub');
 
-const PubSubHelper = require('../../../src/common/helper/PubSubHelper');
+const PubSubHelper = require('../../../src').PubSubHelper;
 
 describe('PubSub Helper tests', () => {
   describe('#perform()', () => {

@@ -1,8 +1,8 @@
 {
   "name": "google-utility-sync-data",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Utilities to work with async data on google platform.",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
     "cover": "nyc --reporter=lcov mocha test/ && nyc report",
     "test": "npm run cover",

@@ -1,5 +1,5 @@
 const PubSubHelper = require('./common/helper/PubSubHelper');
 
-export {
+module.exports = {
   PubSubHelper,
 };
