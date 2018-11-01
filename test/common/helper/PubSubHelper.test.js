@@ -38,8 +38,9 @@ describe('PubSub Helper tests', () => {
           .publish(message)
           .catch((err) => {
             expect(topicPublishStub.calledOnce).to.be.true;
-            expect(err.message)
-                .to.contains('Error on trying to publish information on PubSub');
+            expect(err.message).to.contains(
+                'Error on trying to publish information on PubSub'
+            );
           });
     });
   });
