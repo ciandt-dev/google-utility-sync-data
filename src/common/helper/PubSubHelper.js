@@ -26,7 +26,7 @@ class PubSubHelper {
           .then((results) => {
             console.debug(
                 `Message published: 
-                Message: ${this.topic} 
+                Message: ${topic} 
                 Result: ${results}`
             );
             resolve(results);
