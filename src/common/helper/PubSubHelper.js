@@ -7,24 +7,20 @@ class PubSubHelper {
   /**
    * Constructor for PubSub Helper.
    * @constructor
-   * @param {String} projectId Google Project ID
-   * @param {String} topic Topic to be published.
    */
-  constructor(projectId, topic) {
-    this.projectId = projectId;
-    this.topic = topic;
-  }
+  constructor() {}
 
   /**
    * Publish a message on PubSub topic.
+   * @param {String} topic Topic to be published.
    * @param {String} message Message to be published on topic
    * @return {Promise}
    */
-  publish(message) {
+  publish(topic, message) {
     const buffer = new Buffer(JSON.stringify(message));
     return new Promise((resolve, reject) => {
       new PubSub()
-          .topic(this.topic)
+          .topic(topic)
           .publisher()
           .publish(buffer)
           .then((results) => {
