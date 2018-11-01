@@ -1,0 +1,42 @@
+{
+  "name": "google-utility-sync-data",
+  "version": "0.0.1",
+  "description": "Utilities to work with async data on google platform.",
+  "main": "index.js",
+  "scripts": {
+    "cover": "nyc --reporter=lcov mocha test/ && nyc report",
+    "test": "npm run cover",
+    "test-no-cover": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ciandt-dev/google-utility-sync-data.git"
+  },
+  "keywords": [
+    "google",
+    "async",
+    "functions",
+    "pubsub",
+    "bigquery"
+  ],
+  "author": "ciandt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ciandt-dev/google-utility-sync-data/issues"
+  },
+  "homepage": "https://github.com/ciandt-dev/google-utility-sync-data#readme",
+  "contributors": [
+    "Marco Túlio Teixeira <marcot@ciandt.com>"
+  ],
+  "dependencies": {
+    "@google-cloud/pubsub": "^0.20.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.7.0",
+    "eslint-config-google": "^0.11.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "sinon": "^7.0.0"
+  }
+}
