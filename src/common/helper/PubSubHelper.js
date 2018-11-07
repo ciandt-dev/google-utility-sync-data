@@ -53,7 +53,7 @@ class PubSubHelper {
    */
   publishError(topic, err) {
     if (!err.code) err.code = 1;
-    this.publish(HANDLE_ERRORS_TOPIC_NAME, err);
+    this.publish(topic, err);
   }
 }
 
