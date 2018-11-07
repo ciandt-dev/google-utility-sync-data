@@ -31,7 +31,7 @@ class DatastoreHelper {
     }
 
     const task = this._prepare(kind, entities, keyField);
-    return datastore.save(task);
+    return this.datastore.save(task);
   }
 
   /**
@@ -52,7 +52,7 @@ class DatastoreHelper {
     return new Promise((resolve) => {
       rows.forEach((row) => {
         this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
-          datastore.insert(row);
+          this.datastore.insert(row);
         });
       });
 
@@ -73,7 +73,7 @@ class DatastoreHelper {
     }
 
     return {
-      key: datastore.key({
+      key: this.datastore.key({
         namespace: this.namespace,
         path: keyField ? [kind, entity[keyField]] : [kind],
       }),
