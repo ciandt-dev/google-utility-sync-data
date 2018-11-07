@@ -24,11 +24,13 @@ class BigQueryHelper {
    */
   copyTable(originDatasetId, originTableId,
       destinationDatasetId, destinationTableId) {
-    return nbigquery
+    return this.bigquery
         .dataset(originDatasetId)
         .table(originTableId)
         .copy(
-            bigquery.dataset(destinationDatasetId).table(destinationTableId)
+            this.bigquery
+                .dataset(destinationDatasetId)
+                .table(destinationTableId)
         );
   }
 };
