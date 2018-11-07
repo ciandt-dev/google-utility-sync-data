@@ -33,6 +33,15 @@ class BigQueryHelper {
                 .table(destinationTableId)
         );
   }
+
+  /**
+   * Run a query on a BigQuery Project.
+   * @param {object} options BigQuery options
+   * @return {Promise}
+   */
+  query(options) {
+    return this.bigquery.query(options);
+  }
 };
 
 module.exports = BigQueryHelper;
