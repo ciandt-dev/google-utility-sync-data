@@ -45,6 +45,16 @@ class PubSubHelper {
           });
     });
   }
+
+  /**
+   * Publish a error message in a topic
+   * @param {String} topic
+   * @param {object} err
+   */
+  publishError(topic, err) {
+    if (!err.code) err.code = 1;
+    this.publish(HANDLE_ERRORS_TOPIC_NAME, err);
+  }
 }
 
 module.exports = PubSubHelper;
