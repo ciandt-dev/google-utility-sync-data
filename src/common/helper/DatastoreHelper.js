@@ -85,22 +85,23 @@ class DatastoreHelper {
   /**
    * Delete many entities.
    * @param {string} kind
-   * @param {array} entities
+   * @param {array} rawKeys
    * @return {Promise}
    */
-  deleteEntities(kind, entities) {
-    if (!entities) {
+  deleteEntities(kind, rawKeys) {
+    if (!rawKeys) {
       throw Error('Nothing to be delete.');
     }
 
-    const tasks = this._prepareList(kind, entities, kindId);
-    const rows = chunckArray(tasks, MAX_CHUNK_SIZE);
+    const rows = chunckArray(rawKeys, MAX_CHUNK_SIZE);
 
     return new Promise((resolve) => {
       rows.forEach((row) => {
         this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
-          const key = datastore.key([kindName, row.id]);
-          this.datastore.delete(key);
+          row.forEach((rawKey) => {
+            const key = this.datastore.key([kind, rawKey]);
+            this.datastore.delete(key);
+          });
         });
       });
 
