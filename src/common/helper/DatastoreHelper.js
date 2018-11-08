@@ -10,7 +10,7 @@ const MAX_CHUNK_SIZE = 300;
 class DatastoreHelper {
   /**
    * Constructor for Datastore Helper.
-   * @param {String} namespace Namespace name.
+   * @param {string} namespace Namespace name.
    * @constructor
    */
   constructor(namespace) {
@@ -19,34 +19,54 @@ class DatastoreHelper {
   }
 
   /**
-   * Save entitie.
-   * @param {String} kind
+   * Save entity.
+   * @param {string} kind
    * @param {object} entity
-   * @param {String} keyField
    * @return {Promise}
    */
-  save(kind, entity, keyField=null) {
-    if (!entities) {
+  save(kind, entity) {
+    if (!kind || !entity) {
       throw Error('Nothing to be save.');
     }
 
-    const task = this._prepare(kind, entities, keyField);
-    return this.datastore.save(task);
+    return this.datastore.save(this._prepare(kind, entity));
+  }
+
+  /**
+   * Update entity.
+   * @param {string} kind
+   * @param {object} entity
+   * @param {string|number} kindId
+   * @return {Promise}
+   */
+  update(kind, entity, kindId) {
+    if (kind || entity || kindId) {
+      throw Error('All parameters are required');
+    }
+
+    return new Promise((resolve, reject) => {
+      this.datastore.get(kindId).then((response) => {
+        const updatedEntity = Object.assign(response[0], entity);
+        const task = this._prepare(kind, updatedEntity, kindId);
+
+        this.datastore.save(task).then(resolve).catch(reject);
+      }).catch(reject);
+    });
   }
 
   /**
    * Save many entities.
-   * @param {String} kind
-   * @param {Array} entities
-   * @param {String} keyField
+   * @param {string} kind
+   * @param {array} entities
+   * @param {string} kindId
    * @return {Promise}
    */
-  saveEntities(kind, entities, keyField=null) {
+  saveEntities(kind, entities, kindId) {
     if (!entities) {
       throw Error('Nothing to be save.');
     }
 
-    const tasks = this._prepareList(kind, entities, keyField);
+    const tasks = this._prepareList(kind, entities, kindId);
     const rows = chunckArray(tasks, MAX_CHUNK_SIZE);
 
     return new Promise((resolve) => {
@@ -62,8 +82,8 @@ class DatastoreHelper {
 
   /**
    * Delete many entities.
-   * @param {String} kind
-   * @param {Array} entities
+   * @param {string} kind
+   * @param {array} entities
    * @return {Promise}
    */
   deleteEntities(kind, entities) {
@@ -71,7 +91,7 @@ class DatastoreHelper {
       throw Error('Nothing to be delete.');
     }
 
-    const tasks = this._prepareList(kind, entities, keyField);
+    const tasks = this._prepareList(kind, entities, kindId);
     const rows = chunckArray(tasks, MAX_CHUNK_SIZE);
 
     return new Promise((resolve) => {
@@ -88,42 +108,41 @@ class DatastoreHelper {
 
   /**
    * Prepare entity task to be saved.
-   * @param {String} kind Kind name.
+   * @param {string} kind Kind name.
    * @param {object} entity Entity object to be savedl
-   * @param {String} keyField Property name to be used for a entity.
+   * @param {string|number} kindId Id used to identify entity.
    * @return {object} Datastore task to be saved.
    */
-  _prepare(kind, entity, keyField=null) {
-    if (keyField && !entity.hasOwnProperty(keyField)) {
-      throw Error('An entity does not have the key provided.');
+  _prepare(kind, entity, kindId) {
+    if (kindId) {
+      return {
+        key: this.datastore.key([kind, kindId]),
+        data: entity,
+      };
     }
 
     return {
-      key: this.datastore.key({
-        namespace: this.namespace,
-        path: keyField ? [kind, entity[keyField]] : [kind],
-      }),
-      data: entity,
+      data: entity
     };
   }
 
   /**
    * Prepare datastore tasks to be saved.
-   * @param {String} kind Kind name.
+   * @param {string} kind Kind name.
    * @param {object} entities Entities list to be saved.
-   * @param {String} keyField Property name to be used for a entity.
-   * @return {Array} Datastore tasks to be saved.
+   * @param {string} kindId Property name to be used for a entity.
+   * @return {srray} Datastore tasks to be saved.
    */
-  _prepareList(kind, entities, keyField=null) {
+  _prepareList(kind, entities, kindId) {
     const tasks = entities.map((entity) => {
-      return this._prepare(kind, entity, keyField);
+      return this._prepare(kind, entity, kindId);
     });
     return tasks;
   }
 
   /**
    * Sleep
-   * @param {Number} ms
+   * @param {number} ms
    * @return {Promise}
    */
   _sleep(ms) {
