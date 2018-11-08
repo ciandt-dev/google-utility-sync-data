@@ -74,7 +74,7 @@ class DatastoreHelper {
     return new Promise((resolve) => {
       rows.forEach((row) => {
         this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
-          this.datastore.insert(row);
+          this.datastore.save(row);
         });
       });
 
