@@ -151,7 +151,7 @@ class DatastoreHelper {
    */
   _prepareList(kind, entities, kindId) {
     const tasks = entities.map((entity) => {
-      return this._prepare(kind, entity, kindId);
+      return this._prepare(kind, entity, entity[kindId]);
     });
     return tasks;
   }
