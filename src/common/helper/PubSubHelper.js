@@ -25,7 +25,7 @@ class PubSubHelper {
           .publisher()
           .publish(buffer)
           .then((results) => {
-            console.debug(
+            console.info(
                 `Message published: 
                 Message: ${topic} 
                 Result: ${results}`
