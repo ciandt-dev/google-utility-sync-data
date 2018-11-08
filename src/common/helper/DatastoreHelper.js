@@ -107,6 +107,19 @@ class DatastoreHelper {
   }
 
   /**
+   * Filter a kind by property;
+   * @param {string} kind Kind name
+   * @param {string} property Property to be filtered
+   * @param {string} value Property value
+   * @return {Promise}
+   */
+  filter(kind, property, value) {
+    return this.datastore
+        .createQuery(kind)
+        .filter(property, '=', value);
+  }
+
+  /**
    * Prepare entity task to be saved.
    * @param {string} kind Kind name.
    * @param {object} entity Entity object to be savedl
