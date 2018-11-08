@@ -122,7 +122,7 @@ class DatastoreHelper {
     }
 
     return {
-      data: entity
+      data: entity,
     };
   }
 

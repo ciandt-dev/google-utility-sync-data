@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/ciandt-dev/google-utility-sync-data#readme",
   "contributors": [
-    "Marco Túlio Teixeira <marcot@ciandt.com>"
+    "Marco Túlio Teixeira <omarcoteixeira@gmail.com>",
+    "Lucas Tarley Borges <lukasborges@outlook.com>"
   ],
   "dependencies": {
     "@google-cloud/pubsub": "^0.20.1",
