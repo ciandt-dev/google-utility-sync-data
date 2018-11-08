@@ -99,7 +99,7 @@ class DatastoreHelper {
       rows.forEach((row) => {
         this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
           row.forEach((rawKey) => {
-            const key = datastore.key([kind, rawKey]);
+            const key = this.datastore.key([kind, rawKey]);
             this.datastore.delete(key);
           });
         });
