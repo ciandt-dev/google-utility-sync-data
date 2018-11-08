@@ -12,12 +12,13 @@ class PubSubHelper {
 
   /**
    * Publish a message on PubSub topic.
-   * @param {String} topic Topic to be published.
-   * @param {String} message Message to be published on topic
+   * @param {string} topic Topic to be published.
+   * @param {string} message Message to be published on topic
    * @return {Promise}
    */
   publish(topic, message) {
     const buffer = new Buffer(JSON.stringify(message));
+
     return new Promise((resolve, reject) => {
       new PubSub()
           .topic(topic)
@@ -33,9 +34,8 @@ class PubSubHelper {
           }).catch((err) => {
             const errorMessage =
               `Error on trying to publish information on PubSub. 
-              Topic Message: ${message}, 
-              Message: ${message}, 
-              Error: ${err}`;
+              Topic: ${topic}, 
+              Error: ${err.message}`;
 
             const error = {
               code: 1,
@@ -48,12 +48,15 @@ class PubSubHelper {
 
   /**
    * Publish a error message in a topic
-   * @param {String} topic
+   * @param {string} topic
    * @param {object} err
+   * @return {Promise}
    */
   publishError(topic, err) {
-    if (!err.code) err.code = 1;
-    this.publish(topic, err);
+    if (!err.code) {
+      err.code = 1;
+    }
+    return this.publish(topic, err);
   }
 }
 
