@@ -23,7 +23,7 @@ class BigQueryHelper {
    * @param {String} destinationTableId Destination Dataset table ID.
    * @return {Promise}
    */
-  static copyTable(
+  copyTable(
       originDatasetId, originTableId,
       destinationProjectId, destinationDatasetId, destinationTableId) {
     return this.bigquery
