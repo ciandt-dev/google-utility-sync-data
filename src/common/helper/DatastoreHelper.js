@@ -89,7 +89,7 @@ class DatastoreHelper {
    * @return {Promise}
    */
   deleteEntities(kind, rawKeys) {
-    if (!entities) {
+    if (!rawKeys) {
       throw Error('Nothing to be delete.');
     }
 
