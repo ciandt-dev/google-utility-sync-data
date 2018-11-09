@@ -95,7 +95,7 @@ class DatastoreHelper {
 
     const rows = chunckArray(rawKeys, MAX_CHUNK_SIZE);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       rows.forEach((row) => {
         this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
           row.forEach((rawKey) => {
