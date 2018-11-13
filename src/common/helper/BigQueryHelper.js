@@ -16,23 +16,23 @@ class BigQueryHelper {
 
   /**
    * Copy table from a dataset.
-   * @param {String} originDatasetId Origin table dataset id.
-   * @param {String} originTableId Origin table ID.
-   * @param {String} destinationProjectId Destination Project ID.
-   * @param {String} destinationDatasetId Destination Dataset ID.
-   * @param {String} destinationTableId Destination Dataset table ID.
+   * @param {String} srcProjectId Source Project ID.
+   * @param {String} srcDatasetId Source table dataset id.
+   * @param {String} srcTableId Source table ID.
+   * @param {String} dstDatasetId Destination Dataset ID.
+   * @param {String} dstTableId Destination Dataset table ID.
    * @return {Promise}
    */
   copyTable(
-      originDatasetId, originTableId,
-      destinationProjectId, destinationDatasetId, destinationTableId) {
+      srcProjectId, srcDatasetId, srcTableId,
+      dstDatasetId, dstTableId) {
     return this.bigquery
-        .dataset(originDatasetId)
-        .table(originTableId)
+        .dataset(srcDatasetId)
+        .table(srcTableId)
         .copy(
-            new BigQuery({projectId: destinationProjectId})
-                .dataset(destinationDatasetId)
-                .table(destinationTableId)
+            new BigQuery({projectId: srcProjectId})
+                .dataset(dstDatasetId)
+                .table(dstTableId)
         );
   }
 
