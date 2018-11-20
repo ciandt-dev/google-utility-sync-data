@@ -55,7 +55,7 @@ class BigQueryHelper {
     const options = {
       query: query,
       // Location must match that of the dataset(s) referenced in the query.
-      location: 'US',
+      location: location,
     };
 
     return bigQueryHelper.query(options);
