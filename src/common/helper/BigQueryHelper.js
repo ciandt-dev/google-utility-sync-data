@@ -37,15 +37,6 @@ class BigQueryHelper {
   }
 
   /**
-   * Run a query on a BigQuery Project.
-   * @param {object} options BigQuery options
-   * @return {Promise}
-   */
-  query(options) {
-    return this.bigquery.query(options);
-  }
-
-  /**
    * Executes a query.
    * @param {string} query
    * @param {string} location
@@ -58,7 +49,7 @@ class BigQueryHelper {
       location: location,
     };
 
-    return bigQueryHelper.query(options);
+    return this.bigquery.query(options);
   };
 };
 
