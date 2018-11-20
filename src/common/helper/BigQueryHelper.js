@@ -44,6 +44,22 @@ class BigQueryHelper {
   query(options) {
     return this.bigquery.query(options);
   }
+
+  /**
+   * Executes a query.
+   * @param {string} query
+   * @param {string} location
+   * @return {Promise}
+   */
+  query(query, location) {
+    const options = {
+      query: query,
+      // Location must match that of the dataset(s) referenced in the query.
+      location: 'US',
+    };
+
+    return bigQueryHelper.query(options);
+  };
 };
 
 module.exports = BigQueryHelper;
