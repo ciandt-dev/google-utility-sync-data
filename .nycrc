@@ -1,6 +1,6 @@
 {
     "report-dir": "./.coverage",
-    "exclude": [
+    "include": [
       "src/*{/*,/**/*}.js",
       "src/*/v*/*.js"
     ],

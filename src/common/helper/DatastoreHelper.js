@@ -41,7 +41,7 @@ class DatastoreHelper {
    */
   update(kind, entity, kindId) {
     if (!kind || !entity || !kindId) {
-      throw Error('All parameters are required');
+      throw Error('All parameters are required.');
     }
 
     return new Promise((resolve, reject) => {
