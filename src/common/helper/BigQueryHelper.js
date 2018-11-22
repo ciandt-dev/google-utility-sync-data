@@ -67,7 +67,7 @@ class BigQueryHelper {
    * @return {object}
    */
   getJob(jobId) {
-    return this.bigquery(jobId);
+    return this.bigquery.job(jobId);
   }
 };
 
