@@ -51,6 +51,24 @@ class BigQueryHelper {
 
     return this.bigquery.query(options);
   };
+
+  /**
+   * Create a BQ query job.
+   * @param {string} query
+   * @return {Promise}
+   */
+  createQueryJob(query) {
+    return this.bigquery.createQueryJob(query);
+  };
+
+  /**
+   * Get a BQ job.
+   * @param {string} jobId
+   * @return {object}
+   */
+  getJob(jobId) {
+    return this.bigquery(jobId);
+  }
 };
 
 module.exports = BigQueryHelper;
