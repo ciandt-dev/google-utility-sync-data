@@ -26,11 +26,11 @@ class BigQueryHelper {
   copyTable(
       srcProjectId, srcDatasetId, srcTableId,
       dstDatasetId, dstTableId) {
-    return this.bigquery
+    return new BigQuery({projectId: srcProjectId})
         .dataset(srcDatasetId)
         .table(srcTableId)
         .copy(
-            new BigQuery({projectId: srcProjectId})
+            this.bigquery
                 .dataset(dstDatasetId)
                 .table(dstTableId)
         );
