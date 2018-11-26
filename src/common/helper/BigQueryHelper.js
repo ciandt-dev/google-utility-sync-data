@@ -27,12 +27,12 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcTableId,
       dstDatasetId, dstTableId) {
     return this.bigquery
-        .dataset(srcDatasetId)
-        .table(srcTableId)
+        .dataset(dstDatasetId)
+        .table(dstTableId)
         .copy(
             new BigQuery({projectId: srcProjectId})
-                .dataset(dstDatasetId)
-                .table(dstTableId)
+                .dataset(srcDatasetId)
+                .table(srcTableId)
         );
   }
 
