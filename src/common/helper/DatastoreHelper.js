@@ -69,7 +69,9 @@ class DatastoreHelper {
     }
 
     const tasks = this._prepareList(kind, entities, kindId);
-    return this.datastore.upsert(tasks);
+    return Promise.all(
+        tasks.map((task) => this.datastore.save(task))
+    );
   }
 
   /**
