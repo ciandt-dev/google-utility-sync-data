@@ -69,17 +69,7 @@ class DatastoreHelper {
     }
 
     const tasks = this._prepareList(kind, entities, kindId);
-    const rows = chunckArray(tasks, MAX_CHUNK_SIZE);
-
-    return new Promise((resolve, reject) => {
-      rows.forEach((row) => {
-        this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
-          this.datastore.save(row).catch(reject);
-        });
-      });
-
-      resolve();
-    });
+    return this.datastore.upsert(tasks);
   }
 
   /**
