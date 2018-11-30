@@ -35,7 +35,7 @@ class BigQueryHelper {
                   .dataset(dstDatasetId)
                   .table(dstTableId)
           )
-          .then(checkBigQueryCopyErrors)
+          .then(this.checkBigQueryCopyErrors)
           .then(resolve)
           .catch(reject);
     });
