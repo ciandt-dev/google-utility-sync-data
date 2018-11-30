@@ -26,14 +26,19 @@ class BigQueryHelper {
   copyTable(
       srcProjectId, srcDatasetId, srcTableId,
       dstDatasetId, dstTableId) {
-    return new BigQuery({projectId: srcProjectId})
-        .dataset(srcDatasetId)
-        .table(srcTableId)
-        .copy(
-            this.bigquery
-                .dataset(dstDatasetId)
-                .table(dstTableId)
-        );
+    return new Promise((resolve, reject) => {
+      return new BigQuery({projectId: srcProjectId})
+          .dataset(srcDatasetId)
+          .table(srcTableId)
+          .copy(
+              this.bigquery
+                  .dataset(dstDatasetId)
+                  .table(dstTableId)
+          )
+          .then(checkBigQueryCopyErrors)
+          .then(resolve)
+          .catch(reject);
+    });
   }
 
   /**
@@ -69,6 +74,27 @@ class BigQueryHelper {
   getJob(jobId) {
     return this.bigquery.job(jobId);
   }
+
+  /**
+   * Handle copied data from BQ.
+   * @param {object} results
+   * @return {Promise}
+   */
+  checkBigQueryCopyErrors(results) {
+    return new Promise((resolve, reject) => {
+      const job = results[0];
+
+      console.info(`Job ${job.id} completed.`);
+
+      // Check the job's status for errors
+      const errors = job.status.errors;
+      if (errors && errors.length > 0) {
+        reject(errors);
+      }
+
+      resolve(job);
+    });
+  };
 };
 
 module.exports = BigQueryHelper;
