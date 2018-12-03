@@ -59,11 +59,11 @@ class BigQueryHelper {
 
   /**
    * Create a BQ query job.
-   * @param {string} query
+   * @param {string | object} options
    * @return {Promise}
    */
-  createQueryJob(query) {
-    return this.bigquery.createQueryJob(query);
+  createQueryJob(options) {
+    return this.bigquery.createQueryJob(options);
   };
 
   /**
@@ -120,6 +120,34 @@ class BigQueryHelper {
       this.metadata(datasetId, objectId)
           .then((data) => {
             resolve(data[0].type === 'VIEW');
+          })
+          .catch(reject);
+    });
+  };
+
+  /**
+   * Get metada from a table
+   * @param {String} srcDatasetId
+   * @param {String} srcViewId
+   * @param {String} dstDatasetId
+   * @param {String} dstTableId
+   * @return {Promise}
+   */
+  copyView(srcDatasetId, srcViewId,
+      dstDatasetId, dstTableId) {
+    return new Promise((resolve, reject) => {
+      this.metadata(srcDatasetId, srcViewId)
+          .then((data) => {
+            const view = data[0].view;
+
+            this.createQueryJob({
+              query: view.query,
+              useLegacySql: view.useLegacySql,
+              destination: this.bigquery
+                  .dataset(dstDatasetId)
+                  .table(dstTableId),
+            }).then(resolve)
+                .catch(reject);
           })
           .catch(reject);
     });

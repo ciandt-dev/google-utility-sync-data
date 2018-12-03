@@ -10,7 +10,50 @@ describe('BigQuery Helper tests', () => {
       sinon.restore();
     });
 
-    it.only('Get BQ table metadada.', (done) => {
+    it('Get a job by id', () => {
+      const expected = {
+        id: 'job-id',
+      };
+
+      sinon.stub(
+          BigQuery.prototype, 'job')
+          .returns(expected);
+
+      const job = new BigQueryHelper()
+          .getJob('job-id');
+      expect(job).to.be.equals(expected);
+    });
+
+    it('Copy a view to a table', (done) => {
+      sinon.stub(
+          BigQuery.prototype, 'dataset')
+          .returns({
+            table: sinon.fake.returns({
+              getMetadata: sinon.fake.resolves(
+                  [{
+                    view: {
+                      type: 'VIEW',
+                      query: 'SELECT * FROM Table1',
+                      useLegacySql: true,
+                    },
+                  }]
+              ),
+            }),
+          });
+
+      sinon.stub(BigQuery.prototype, 'createQueryJob').resolves({});
+
+      new BigQueryHelper()
+          .copyView(
+              'marcot', 'vw_user_anime_list_300k_200_watched_episodes',
+              'marcot', 'jurema2'
+          )
+          .then((result) => {
+            done();
+          });
+    });
+
+    it('Get BQ table metadada.', (done) => {
       const getMetadataStub = sinon.stub(
           BigQuery.prototype, 'dataset')
           .returns({
