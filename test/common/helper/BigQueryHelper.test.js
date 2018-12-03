@@ -10,6 +10,24 @@ describe('BigQuery Helper tests', () => {
       sinon.restore();
     });
 
+    it.only('Get BQ table metadada.', (done) => {
+      const getMetadataStub = sinon.stub(
+          BigQuery.prototype, 'dataset')
+          .returns({
+            table: sinon.fake.returns({
+              getMetadata: sinon.fake.resolves([{type: 'VIEW'}]),
+            }),
+          });
+
+      new BigQueryHelper()
+          .isView('marcot', 'vw_user_anime_list_300k_200_watched_episodes')
+          .then((result) => {
+            expect(getMetadataStub.calledOnce).to.be.true;
+            expect(result).to.be.true;
+            done();
+          });
+    });
+
     it('Publish a simple message on PubSub.', () => {
       const bigqueryStub = sinon.fake.resolves({});
       const query = 'SELECT * FROM Table1';

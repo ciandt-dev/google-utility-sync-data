@@ -95,6 +95,35 @@ class BigQueryHelper {
       resolve(job);
     });
   };
+
+  /**
+   * Get metada from a table
+   * @param {String} datasetId
+   * @param {String} tableId
+   * @return {Promise}
+   */
+  metadata(datasetId, tableId) {
+    return this.bigquery
+        .dataset(datasetId)
+        .table(tableId)
+        .getMetadata();
+  };
+
+  /**
+   * Get metada from a table
+   * @param {String} datasetId
+   * @param {String} objectId
+   * @return {Promise}
+   */
+  isView(datasetId, objectId) {
+    return new Promise((resolve, reject) => {
+      this.metadata(datasetId, objectId)
+          .then((data) => {
+            resolve(data[0].type === 'VIEW');
+          })
+          .catch(reject);
+    });
+  };
 };
 
 module.exports = BigQueryHelper;

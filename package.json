@@ -4,9 +4,8 @@
   "description": "Utilities to work with async data on google platform.",
   "main": "./src/index.js",
   "scripts": {
-    "cover": "nyc --reporter=lcov mocha test/ && nyc report",
-    "test": "npm run cover",
-    "test-no-cover": "mocha"
+    "cov": "nyc --reporter=lcov mocha test/ && nyc report",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
