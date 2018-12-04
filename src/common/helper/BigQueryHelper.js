@@ -98,12 +98,13 @@ class BigQueryHelper {
 
   /**
    * Get metada from a table
+   * @param {String} projectId
    * @param {String} datasetId
    * @param {String} tableId
    * @return {Promise}
    */
-  metadata(datasetId, tableId) {
-    return this.bigquery
+  metadata(projectId, datasetId, tableId) {
+    return new BigQuery({projectId: projectId})
         .dataset(datasetId)
         .table(tableId)
         .getMetadata();
@@ -111,13 +112,14 @@ class BigQueryHelper {
 
   /**
    * Get metada from a table
+   * @param {String} projectId
    * @param {String} datasetId
    * @param {String} objectId
    * @return {Promise}
    */
-  isView(datasetId, objectId) {
+  isView(projectId, datasetId, objectId) {
     return new Promise((resolve, reject) => {
-      this.metadata(datasetId, objectId)
+      this.metadata(projectId, datasetId, objectId)
           .then((data) => {
             resolve(data[0].type === 'VIEW');
           })
@@ -127,16 +129,17 @@ class BigQueryHelper {
 
   /**
    * Get metada from a table
+   * @param {String} srcProjectId
    * @param {String} srcDatasetId
    * @param {String} srcViewId
    * @param {String} dstDatasetId
    * @param {String} dstTableId
    * @return {Promise}
    */
-  copyView(srcDatasetId, srcViewId,
+  copyView(srcProjectId, srcDatasetId, srcViewId,
       dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      this.metadata(srcDatasetId, srcViewId)
+      this.metadata(srcProjectId, srcDatasetId, srcViewId)
           .then((data) => {
             const view = data[0].view;
 
@@ -152,6 +155,34 @@ class BigQueryHelper {
           .catch(reject);
     });
   };
+
+  /**
+   * Copy Resource (View or Table) from a dataset.
+   * @param {String} srcProjectId Source Project ID.
+   * @param {String} srcDatasetId Source table dataset id.
+   * @param {String} srcResourceId Source resource ID.
+   * @param {String} dstDatasetId Destination Dataset ID.
+   * @param {String} dstTableId Destination Dataset table ID.
+   * @return {Promise}
+   */
+  copyResource(
+      srcProjectId, srcDatasetId, srcResourceId,
+      dstDatasetId, dstTableId) {
+    return new Promise((resolve, reject) => {
+      this.isView(srcProjectId, srcDatasetId, srcResourceId)
+          .then((isResourceView) => {
+            if (isResourceView) {
+              this.copyView(srcProjectId, srcDatasetId, srcResourceId,
+                  dstDatasetId, dstTableId
+              ).then(resolve).catch(reject);
+            } else {
+              this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
+                  dstDatasetId, dstTableId
+              ).then(resolve).catch(reject);
+            }
+          }).catch(reject);
+    });
+  }
 };
 
 module.exports = BigQueryHelper;
