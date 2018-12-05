@@ -22,15 +22,16 @@ class DatastoreHelper {
    * Save entity.
    * @param {string} kind
    * @param {object} entity
+   * @param {string|number} kindId
    * @return {Promise}
    */
-  save(kind, entity) {
+  save(kind, entity, kindId) {
     if (!kind || !entity) {
       throw Error('Nothing to be save.');
     }
-
-    return this.datastore.save(this._prepare(kind, entity));
+    return this.datastore.save(this._prepare(kind, entity, kindId));
   }
+
 
   /**
    * Update entity.
@@ -107,9 +108,17 @@ class DatastoreHelper {
    * @return {Promise}
    */
   filter(kind, property, value) {
-    return this.datastore
-        .createQuery(kind)
+    return this.createQuery(kind)
         .filter(property, '=', value);
+  }
+
+  /**
+   * Create a datastore query.
+   * @param {string} kind
+   * @return {Query}
+   */
+  createQuery(kind) {
+    return this.datastore.createQuery(kind);
   }
 
   /**
@@ -128,6 +137,7 @@ class DatastoreHelper {
     }
 
     return {
+      key: this.datastore.key(kind),
       data: entity,
     };
   }
