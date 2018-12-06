@@ -44,14 +44,14 @@ describe('SyncDataTaskManagerService tests', () => {
       const jobId = '4fcbe3b7-9151-4911-8341-4399d19a1f0b';
 
       sinon.stub(
-          FirestoreHelper.prototype, 'document')
+          DatastoreHelper.prototype, 'createQuery')
           .returns(
               {
-                where: sinon.fake.returns({
-                  where: sinon.fake.returns({
-                    get: sinon.fake.resolves({
-                      size: 10, // Number of items with error.
-                    }),
+                filter: sinon.fake.returns({
+                  filter: sinon.fake.returns({
+                    run: sinon.fake.resolves([
+                      [{size: 10}], // Number of items with error.
+                    ]),
                   }),
                 }),
               }
@@ -67,17 +67,17 @@ describe('SyncDataTaskManagerService tests', () => {
 
     it('Get document with success', (done) => {
       const jobId = '4fcbe3b7-9151-4911-8341-4399d19a1f0b';
-      const expectTotal = 10;
+      const expectTotal = 1;
 
       sinon.stub(
-          FirestoreHelper.prototype, 'document')
+          DatastoreHelper.prototype, 'createQuery')
           .returns(
               {
-                where: sinon.fake.returns({
-                  where: sinon.fake.returns({
-                    get: sinon.fake.resolves({
-                      size: expectTotal, // Number of items with success.
-                    }),
+                filter: sinon.fake.returns({
+                  filter: sinon.fake.returns({
+                    run: sinon.fake.resolves([
+                      [{size: 10}], // Number of items with error.
+                    ]),
                   }),
                 }),
               }

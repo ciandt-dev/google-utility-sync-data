@@ -1,4 +1,5 @@
-const {SyncDataTaskManagerStatus, SyncDataTaskManager} = require('../domain/SyncDataTaskManager');
+const {SyncDataTaskManagerStatus} =
+  require('../domain/SyncDataTaskManager');
 const DatastoreHelper = require('../common/helper/DatastoreHelper');
 
 /**
