@@ -95,7 +95,7 @@ describe('Datastore Helper tests', () => {
       };
 
       const datastoreStub = sinon.fake.resolves({});
-      sinon.replace(Datastore.prototype, 'save', datastoreStub);
+      sinon.replace(Datastore.prototype, 'upsert', datastoreStub);
 
       new DatastoreHelper('dst-namespace')
           .saveEntities('Kind', [entity1, entity2], 'name')

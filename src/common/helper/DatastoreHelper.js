@@ -70,7 +70,7 @@ class DatastoreHelper {
     }
 
     const tasks = this._prepareList(kind, entities, kindId);
-    return this.datastore.insert(tasks);
+    return this.datastore.upsert(tasks);
   }
 
   /**
