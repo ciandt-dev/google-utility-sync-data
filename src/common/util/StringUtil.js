@@ -33,7 +33,19 @@ const generateKeywords = (object, keys) => {
   return keywords;
 };
 
+/**
+* Parse a PubSub message
+* @param {Object} message
+* @return {object}
+*/
+const parsePubSubMessage = (message) => {
+  return JSON.parse(
+      Buffer.from(message, 'base64')
+          .toString());
+};
+
 module.exports = {
   hashCode,
   generateKeywords,
+  parsePubSubMessage,
 };
