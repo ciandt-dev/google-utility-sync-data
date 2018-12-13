@@ -1,6 +1,6 @@
 
 /**
- * Log formatted information about handle data.
+ * Log formatted information.
  * @param {string} label
  * @param {object} context
  * @param {string} message
