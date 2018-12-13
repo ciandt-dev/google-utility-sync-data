@@ -12,7 +12,7 @@ const logInfo = (label, context, message, optionalParams) => {
   const token = context.nextQuery ?
     `[Token: ${context.nextQuery.pageToken}]` : '';
   const toLog = `[${label}]${timestamp}${connector}${token} ${message}.`; // eslint-disable-line
-  obj ? console.info(toLog, optionalParams) : console.info(toLog);
+  optionalParams ? console.info(toLog, optionalParams) : console.info(toLog);
 };
 
 module.exports = {
