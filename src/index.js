@@ -3,6 +3,7 @@ const DatastoreHelper = require('./common/helper/DatastoreHelper');
 const BigQueryHelper = require('./common/helper/BigQueryHelper');
 const ErrorUtil = require('./common/util/ErrorUtil');
 const StringUtil = require('./common/util/StringUtil');
+const LogUtil = require('./common/util/LogUtil');
 
 const SyncDataTaskManagerService =
   require('./service/SyncDataTaskManagerService');
@@ -18,4 +19,5 @@ module.exports = {
   SyncDataTaskManagerService,
   SyncDataTaskManager,
   SyncDataTaskManagerStatus,
+  LogUtil,
 };
