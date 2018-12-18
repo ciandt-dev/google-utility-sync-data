@@ -173,7 +173,7 @@ class BigQueryHelper {
               this.copyView(
                   srcProjectId, srcDatasetId, srcResourceId,
                   dstDatasetId, dstTableId
-              ).then(checkCopyViewJobStatus)
+              ).then(this.checkCopyViewJobStatus)
                   .then(resolve).catch(reject);
             } else {
               this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
