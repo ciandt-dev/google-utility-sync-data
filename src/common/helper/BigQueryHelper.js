@@ -149,10 +149,8 @@ class BigQueryHelper {
               destination: this.bigquery
                   .dataset(dstDatasetId)
                   .table(dstTableId),
-            }).then(resolve)
-                .catch(reject);
-          })
-          .catch(reject);
+            }).then(resolve).catch(reject);
+          }).catch(reject);
     });
   };
 
@@ -172,9 +170,11 @@ class BigQueryHelper {
       this.isView(srcProjectId, srcDatasetId, srcResourceId)
           .then((isResourceView) => {
             if (isResourceView) {
-              this.copyView(srcProjectId, srcDatasetId, srcResourceId,
+              this.copyView(
+                  srcProjectId, srcDatasetId, srcResourceId,
                   dstDatasetId, dstTableId
-              ).then(resolve).catch(reject);
+              ).then(checkCopyViewJobStatus)
+                  .then(resolve).catch(reject);
             } else {
               this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
                   dstDatasetId, dstTableId
@@ -183,6 +183,16 @@ class BigQueryHelper {
           }).catch(reject);
     });
   }
+
+  /**
+   * Check status of copy view job
+   * @param {object} data
+   * @return {Promise}
+   */
+  checkCopyViewJobStatus(data) {
+    const job = data[0];
+    return job.getQueryResults();
+  };
 };
 
 module.exports = BigQueryHelper;
