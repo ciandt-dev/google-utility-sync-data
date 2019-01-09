@@ -26,7 +26,8 @@ const generateKeywords = (object, keys) => {
         const element = word.slice(0, index);
         keywords.push(element);
       }
-      keywords.push(word.toLowerCase());
+      word = word.toLowerCase();
+      keywords.push(word);
     });
   });
 
