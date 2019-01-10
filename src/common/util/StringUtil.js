@@ -24,10 +24,9 @@ const generateKeywords = (object, keys) => {
     words.forEach((word) => {
       for (let index = maxKeywordLength; index < word.length; index++) {
         const element = word.slice(0, index);
-        keywords.push(element);
+        keywords.push(element.toLowerCase());
       }
-      word = word.toLowerCase();
-      keywords.push(word);
+      keywords.push(word.toLowerCase());
     });
   });
 
