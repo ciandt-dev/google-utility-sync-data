@@ -1,4 +1,4 @@
-const {Datastore} = require('@google-cloud/datastore');
+const Datastore = require('@google-cloud/datastore');
 const {chunckArray} = require('../util/ArrayUtil');
 
 const INTERVAL_SAVE_ENTITIES_BATCH = 3000;
