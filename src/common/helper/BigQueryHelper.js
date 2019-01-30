@@ -19,19 +19,20 @@ class BigQueryHelper {
    * @param {String} srcProjectId Source Project ID.
    * @param {String} srcDatasetId Source table dataset id.
    * @param {String} srcTableId Source table ID.
+   * @param {String} dstProjectId Destination Project ID.
    * @param {String} dstDatasetId Destination Dataset ID.
    * @param {String} dstTableId Destination Dataset table ID.
    * @return {Promise}
    */
   copyTable(
       srcProjectId, srcDatasetId, srcTableId,
-      dstDatasetId, dstTableId) {
+      dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
       return new BigQuery({projectId: srcProjectId})
           .dataset(srcDatasetId)
           .table(srcTableId)
           .copy(
-              this.bigquery
+              new BigQuery({projectId: dstProjectId})
                   .dataset(dstDatasetId)
                   .table(dstTableId)
           )
@@ -132,12 +133,13 @@ class BigQueryHelper {
    * @param {String} srcProjectId
    * @param {String} srcDatasetId
    * @param {String} srcViewId
+   * @param {String} dstProjectId
    * @param {String} dstDatasetId
    * @param {String} dstTableId
    * @return {Promise}
    */
   copyView(srcProjectId, srcDatasetId, srcViewId,
-      dstDatasetId, dstTableId) {
+      dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
       this.metadata(srcProjectId, srcDatasetId, srcViewId)
           .then((data) => {
@@ -146,7 +148,7 @@ class BigQueryHelper {
             this.createQueryJob({
               query: view.query,
               useLegacySql: view.useLegacySql,
-              destination: this.bigquery
+              destination: new BigQuery({projectId: dstProjectId})
                   .dataset(dstDatasetId)
                   .table(dstTableId),
             }).then(resolve).catch(reject);
@@ -159,25 +161,26 @@ class BigQueryHelper {
    * @param {String} srcProjectId Source Project ID.
    * @param {String} srcDatasetId Source table dataset id.
    * @param {String} srcResourceId Source resource ID.
+   * @param {String} dstProjectId Destination Project ID.
    * @param {String} dstDatasetId Destination Dataset ID.
    * @param {String} dstTableId Destination Dataset table ID.
    * @return {Promise}
    */
   copyResource(
       srcProjectId, srcDatasetId, srcResourceId,
-      dstDatasetId, dstTableId) {
+      dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
       this.isView(srcProjectId, srcDatasetId, srcResourceId)
           .then((isResourceView) => {
             if (isResourceView) {
               this.copyView(
                   srcProjectId, srcDatasetId, srcResourceId,
-                  dstDatasetId, dstTableId
+                  dstProjectId, dstDatasetId, dstTableId
               ).then(this.checkCopyViewJobStatus)
                   .then(resolve).catch(reject);
             } else {
               this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
-                  dstDatasetId, dstTableId
+                dstProjectId, dstDatasetId, dstTableId
               ).then(resolve).catch(reject);
             }
           }).catch(reject);
