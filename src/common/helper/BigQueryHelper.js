@@ -56,7 +56,7 @@ class BigQueryHelper {
     };
 
     return this.bigquery.query(options);
-  };
+  }
 
   /**
    * Create a BQ query job.
@@ -65,7 +65,7 @@ class BigQueryHelper {
    */
   createQueryJob(options) {
     return this.bigquery.createQueryJob(options);
-  };
+  }
 
   /**
    * Get a BQ job.
@@ -95,7 +95,7 @@ class BigQueryHelper {
 
       resolve(job);
     });
-  };
+  }
 
   /**
    * Get metada from a table
@@ -109,7 +109,7 @@ class BigQueryHelper {
         .dataset(datasetId)
         .table(tableId)
         .getMetadata();
-  };
+  }
 
   /**
    * Get metada from a table
@@ -126,7 +126,7 @@ class BigQueryHelper {
           })
           .catch(reject);
     });
-  };
+  }
 
   /**
    * Get metada from a table
@@ -154,7 +154,7 @@ class BigQueryHelper {
             }).then(resolve).catch(reject);
           }).catch(reject);
     });
-  };
+  }
 
   /**
    * Copy Resource (View or Table) from a dataset.
@@ -180,7 +180,7 @@ class BigQueryHelper {
                   .then(resolve).catch(reject);
             } else {
               this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
-                dstProjectId, dstDatasetId, dstTableId
+                  dstProjectId, dstDatasetId, dstTableId
               ).then(resolve).catch(reject);
             }
           }).catch(reject);
@@ -195,7 +195,7 @@ class BigQueryHelper {
   checkCopyViewJobStatus(data) {
     const job = data[0];
     return job.getQueryResults();
-  };
-};
+  }
+}
 
 module.exports = BigQueryHelper;
