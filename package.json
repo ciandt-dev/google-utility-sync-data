@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@google-cloud/bigquery": "^2.0.0",
-    "@google-cloud/datastore": "^3.0.0",
+    "@google-cloud/datastore": "^2.0.0",
     "@google-cloud/firestore": "^0.21.0",
     "@google-cloud/pubsub": "^0.20.0"
   }
