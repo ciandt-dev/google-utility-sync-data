@@ -47,6 +47,10 @@ class DatastoreHelper {
 
     return new Promise((resolve, reject) => {
       const key = this.datastore.key([kind, kindId]);
+
+      console.log('Key: ' + key);
+      console.log('Entity: ' + entity);
+
       this.datastore.get(key).then((response) => {
         const data = response ? response[0] : {};
         const updatedEntity = Object.assign(data, entity);
