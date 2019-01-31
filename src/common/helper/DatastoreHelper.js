@@ -29,7 +29,7 @@ class DatastoreHelper {
     if (!kind || !entity) {
       throw Error('Nothing to be save.');
     }
-    return this.datastore.save(this._prepare(kind, entity, kindId));
+    return this.datastore.upsert(this._prepare(kind, entity, kindId));
   }
 
 
@@ -47,12 +47,7 @@ class DatastoreHelper {
 
     return new Promise((resolve, reject) => {
       const key = this.datastore.key([kind, kindId]);
-
-      console.log('Key: ', key);
-      console.log('Entity: ', entity);
-
       this.datastore.get(key).then((response) => {
-        console.log('Response: ', response);
         const data = response ? response[0] : {};
         const updatedEntity = Object.assign(data, entity);
         const toSave = this._prepare(kind, updatedEntity, kindId);

@@ -30,7 +30,7 @@ class SyncDataTaskManagerService {
    */
   updateTask(task) {
     return this.datastoreHelper
-        .update('SyncDataTaskManager', task, `${task.jobId}-${task.token}`);
+        .save('SyncDataTaskManager', task, `${task.jobId}-${task.token}`);
   }
 
   /**
