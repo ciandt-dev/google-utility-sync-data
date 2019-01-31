@@ -4,6 +4,7 @@ const BigQueryHelper = require('./common/helper/BigQueryHelper');
 const ErrorUtil = require('./common/util/ErrorUtil');
 const StringUtil = require('./common/util/StringUtil');
 const LogUtil = require('./common/util/LogUtil');
+const ArrayUtil = require('./common/util/ArrayUtil');
 
 const SyncDataTaskManagerService =
   require('./service/SyncDataTaskManagerService');
@@ -20,4 +21,5 @@ module.exports = {
   SyncDataTaskManager,
   SyncDataTaskManagerStatus,
   LogUtil,
+  ArrayUtil,
 };
