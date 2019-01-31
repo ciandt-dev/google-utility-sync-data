@@ -47,12 +47,12 @@ class DatastoreHelper {
 
     return new Promise((resolve, reject) => {
       const key = this.datastore.key([kind, kindId]);
-
       this.datastore.get(key).then((response) => {
-        const updatedEntity = Object.assign(response[0], entity);
-        const task = this._prepare(kind, updatedEntity, kindId);
+        const data = response ? response[0] : {};
+        const updatedEntity = Object.assign(data, entity);
+        const toSave = this._prepare(kind, updatedEntity, kindId);
 
-        this.datastore.save(task).then(resolve).catch(reject);
+        this.datastore.save(toSave).then(resolve).catch(reject);
       }).catch(reject);
     });
   }
