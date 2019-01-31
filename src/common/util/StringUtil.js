@@ -20,14 +20,16 @@ const generateKeywords = (object, keys) => {
 
   keys = keys.split(',');
   keys.forEach((key) => {
-    const words = object[key].toString().split(' ');
-    words.forEach((word) => {
-      for (let index = maxKeywordLength; index < word.length; index++) {
-        const element = word.slice(0, index);
-        keywords.push(element.toLowerCase());
-      }
-      keywords.push(word.toLowerCase());
-    });
+    if (object && object.hasOwnProperty(key)) {
+      const words = object[key].toString().split(' ');
+      words.forEach((word) => {
+        for (let index = maxKeywordLength; index < word.length; index++) {
+          const element = word.slice(0, index);
+          keywords.push(element.toLowerCase());
+        }
+        keywords.push(word.toLowerCase());
+      });
+    }
   });
 
   return keywords;
