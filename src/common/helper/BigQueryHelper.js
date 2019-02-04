@@ -196,6 +196,21 @@ class BigQueryHelper {
     const job = data[0];
     return job.getQueryResults();
   }
+
+  /**
+   * Delete a Biquery Table.
+   * @param {string} projectId
+   * @param {string} datasetId
+   * @param {string} tableId
+   * @return {Promise}
+   */
+  delete(projectId, datasetId, tableId) {
+    return this.bigquery.delete(
+        new BigQuery({projectId: projectId})
+            .dataset(datasetId)
+            .table(tableId)
+    );
+  }
 }
 
 module.exports = BigQueryHelper;
