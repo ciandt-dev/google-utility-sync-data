@@ -205,11 +205,10 @@ class BigQueryHelper {
    * @return {Promise}
    */
   delete(projectId, datasetId, tableId) {
-    return this.bigquery.delete(
-        new BigQuery({projectId: projectId})
-            .dataset(datasetId)
-            .table(tableId)
-    );
+    return new BigQuery({projectId: projectId})
+        .dataset(datasetId)
+        .table(tableId)
+        .delete();
   }
 }
 
