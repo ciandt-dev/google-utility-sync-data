@@ -89,7 +89,7 @@ class DatastoreHelper {
     const _rows = chunckArray(rawKeys, _chunk);
     
     _rows.forEach((chuncks) => {
-      const _keys = chuncks.map((item) => this.data.key([kind, item]));
+      const _keys = chuncks.map((item) => this.datastore.key([kind, item]));
       _chunks_of_keys.push(this.datastore.delete(_keys));
     })
 
