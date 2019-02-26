@@ -87,7 +87,7 @@ describe('BigQuery Helper tests', () => {
     it('Copy a table from a BQ project.', () => {
       const copyStub = sinon.stub(BigQuery.prototype, 'dataset').returns({
         table: sinon.fake.returns({
-          copy: sinon.fake.resolves({}),
+          copy: sinon.fake.resolves([{'id': 'xpto', 'status': {'errors': {}}}]),
         }),
       });
 

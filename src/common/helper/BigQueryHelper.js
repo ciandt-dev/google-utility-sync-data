@@ -84,6 +84,9 @@ class BigQueryHelper {
   checkBigQueryCopyErrors(results) {
     return new Promise((resolve, reject) => {
       const job = results[0];
+      if (!job) {
+        reject('Missing job.');
+      }
 
       console.info(`Job ${job.id} completed.`);
 

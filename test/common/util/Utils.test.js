@@ -52,7 +52,9 @@ describe('Utils tests', () => {
         description: 'Description',
       };
       const words = StringUtil.generateKeywords(entity, 'code,name');
-      expect(words).to.deep.equals(['12', 'En', 'Ent', 'Enti', 'Entit', 'Entity']);
+      expect(words).to.deep.equals(
+          ['12', 'En', 'Ent', 'Enti', 'Entit', 'Entity']
+              .map((x) => x.toLowerCase()));
     });
   });
 });

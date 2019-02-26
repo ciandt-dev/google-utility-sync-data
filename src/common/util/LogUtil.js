@@ -15,6 +15,25 @@ const logInfo = (label, context, message, optionalParams) => {
   optionalParams ? console.info(toLog, optionalParams) : console.info(toLog);
 };
 
+/**
+ * Common logs
+ * @param  {...any} args
+ */
+const log = (...args) => {
+  console.log(...args);
+};
+
+/**
+ * Error logs
+ * @param  {...any} args
+ */
+const error = (...args) => {
+  console.error(...args);
+};
+
+
 module.exports = {
   logInfo,
+  log,
+  error,
 };

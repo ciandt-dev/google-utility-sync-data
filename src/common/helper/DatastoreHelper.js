@@ -2,7 +2,7 @@ const {Datastore} = require('@google-cloud/datastore');
 const {chunckArray} = require('../util/ArrayUtil');
 
 const INTERVAL_SAVE_ENTITIES_BATCH = 3000;
-const MAX_CHUNK_SIZE = 300;
+const MAX_CHUNK_SIZE = 50;
 
 /**
  * Datastore Helper.
@@ -79,25 +79,21 @@ class DatastoreHelper {
    * @param {array} rawKeys
    * @return {Promise}
    */
-  deleteEntities(kind, rawKeys) {
+  deleteEntities(kind, rawKeys, chunk) {
     if (!rawKeys) {
       throw Error('Nothing to be delete.');
     }
 
-    const rows = chunckArray(rawKeys, MAX_CHUNK_SIZE);
+    var _chunk = chunk || MAX_CHUNK_SIZE;
+    var _chunks_of_keys = [];
+    const _rows = chunckArray(rawKeys, _chunk);
+    
+    _rows.forEach((chuncks) => {
+      const _keys = chuncks.map((item) => this.data.key([kind, item]));
+      _chunks_of_keys.push(this.datastore.delete(_keys));
+    })
 
-    return new Promise((resolve, reject) => {
-      rows.forEach((row) => {
-        this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
-          row.forEach((rawKey) => {
-            const key = this.datastore.key([kind, rawKey]);
-            this.datastore.delete(key).catch(reject);
-          });
-        });
-      });
-
-      resolve();
-    });
+    return Promise.all(_chunks_of_keys);
   }
 
   /**
