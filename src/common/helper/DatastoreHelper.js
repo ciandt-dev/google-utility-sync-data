@@ -77,6 +77,7 @@ class DatastoreHelper {
    * Delete many entities.
    * @param {string} kind
    * @param {array} rawKeys
+   * @param {int} chunk
    * @return {Promise}
    */
   deleteEntities(kind, rawKeys, chunk) {
@@ -84,31 +85,36 @@ class DatastoreHelper {
       throw Error('Nothing to be delete.');
     }
 
-    var _chunk = chunk || MAX_CHUNK_SIZE;
-    var _chunks_of_keys = [];
+    const _chunk = chunk || MAX_CHUNK_SIZE;
+    const _chunksOfKeys = [];
     const _rows = chunckArray(rawKeys, _chunk);
-    
+
     _rows.forEach((chuncks) => {
       const _keys = chuncks.map((item) => this.datastore.key([kind, item]));
-      _chunks_of_keys.push(deleteEntitiesEngine(_keys));
-    })
+      _chunksOfKeys.push(this.deleteEntitiesEngine(_keys));
+    });
 
-    return Promise.all(_chunks_of_keys);
+    return Promise.all(_chunksOfKeys);
   }
 
 
+  /**
+   * Digest the keys to be deleted.
+   * @param {Array} _keys
+   * @return {Promise}
+   */
   deleteEntitiesEngine(_keys) {
     return new Promise((resolve, reject) => {
-      this.datastore.delete(_keys).then(result => {
-        console.log('Success:',result);
+      this.datastore.delete(_keys).then((result) => {
+        console.log('Success:', result);
         resolve({
           'status': 'success',
-          'keys': _keys
+          'keys': _keys,
         });
-      }).catch(err => {
+      }).catch((err) => {
         console.error('Err on Delete Entities:', err);
-        reject(err);        
-      })
+        reject(err);
+      });
     });
   }
 
