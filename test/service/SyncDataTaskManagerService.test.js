@@ -15,7 +15,7 @@ describe('SyncDataTaskManagerService tests', () => {
       const token = 'YmlncXVlcnl0b2tlbnRlc3Rz';
 
       sinon.stub(
-          DatastoreHelper.prototype, 'update').resolves({});
+          DatastoreHelper.prototype, 'save').resolves({});
 
       const entity = new SyncDataTaskManager(jobId, token);
       entity.setStatusSuccess();

@@ -96,6 +96,23 @@ class DatastoreHelper {
     return Promise.all(_chunks_of_keys);
   }
 
+
+  deleteEntitiesEngine(_keys) {
+    return new Promise((resolve, reject) => {
+      this.datastore.delete(_keys).then(result => {
+        console.log('Success:',result);
+        resolve({
+          'status': 'success',
+          'keys': _keys
+        });
+      }).catch(err => {
+        console.error('Err on Delete Entities:', err);
+        reject(err);        
+      })
+    });
+  }
+
+
   /**
    * Filter a kind by property;
    * @param {string} kind Kind name
