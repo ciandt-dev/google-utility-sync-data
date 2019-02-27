@@ -90,7 +90,7 @@ class DatastoreHelper {
     
     _rows.forEach((chuncks) => {
       const _keys = chuncks.map((item) => this.datastore.key([kind, item]));
-      _chunks_of_keys.push(this.datastore.delete(_keys));
+      _chunks_of_keys.push(deleteEntitiesEngine(_keys));
     })
 
     return Promise.all(_chunks_of_keys);
