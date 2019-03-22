@@ -70,6 +70,16 @@ class DataFlowHelper {
   };
 
   /**
+   * Autho Dataflow.
+   * @return {object}
+   */
+  authDataFlow() {
+    return google.auth.getClient({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    });
+  };
+
+  /**
  * Launch a new pipeline on Google Data Flow.
  * @param {object} context
  * @param {string} template
@@ -83,9 +93,7 @@ class DataFlowHelper {
       const _request = this.requestFactory(context, template);
       logInfo(context, '[DATAFLOW] REQUEST ::', _request);
 
-      google.auth.getClient({
-        scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-      })
+      this.authDataFlow()
           .then((auth) => {
             _request.auth = auth;
             this.launchFlow(_request)
