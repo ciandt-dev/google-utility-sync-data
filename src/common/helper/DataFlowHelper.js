@@ -105,6 +105,4 @@ class DataFlowHelper {
 }
 
 
-module.exports = {
-  DataFlowHelper,
-};
+module.exports = DataFlowHelper;
