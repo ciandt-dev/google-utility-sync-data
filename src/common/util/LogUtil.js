@@ -1,39 +1,45 @@
 
 /**
- * Log formatted information.
- * @param {string} label
+ * Build a log structure to be used for both situations
+ * info or error.
  * @param {object} context
  * @param {string} message
- * @param {object} optionalParams
+ * @return {string}
  */
-const logInfo = (label, context, message, optionalParams) => {
-  const connector = `[${context.connector.id}]`;
+const logFactory = (context, message) => {
+  const connector = context.connector ? `[${context.connector.id}]` : '';
   const timestamp = context.timestamp ? `[${context.timestamp}]` : '';
-  const token = context.nextQuery ?
-    `[Token: ${context.nextQuery.pageToken}]` : '';
-  const toLog = `[${label}]${timestamp}${connector}${token} ${message}.`; // eslint-disable-line
-  optionalParams ? console.info(toLog, optionalParams) : console.info(toLog);
+    const toLog = `[CHECK_DIFFERENCE][${context.type.toUpperCase()}]${timestamp} ${connector} ${message}.`; // eslint-disable-line
+  return toLog;
 };
 
 /**
- * Common logs
- * @param  {...any} args
- */
-const log = (...args) => {
-  console.log(...args);
+   * Log formatted information about handle data.
+   * @param {object} context
+   * @param {string} message
+   * @param {object} obj
+   */
+const logInfo = (context, message, obj) => {
+  const toLog = logFactory(context, message);
+  if (process.env.NODE_ENV !== 'test') {
+      obj ? console.info(toLog, obj) : console.info(toLog, context);
+  }
 };
 
 /**
- * Error logs
- * @param  {...any} args
- */
-const error = (...args) => {
-  console.error(...args);
+   * Log formatted error.
+   * @param {object} context
+   * @param {string} message
+   * @param {object} err
+   */
+const logError = (context, message, err) => {
+  const toLog = logFactory(context, message);
+  if (process.env.NODE_ENV !== 'test') {
+      err ? console.error(toLog, err) : console.error(toLog, context);
+  }
 };
-
 
 module.exports = {
   logInfo,
-  log,
-  error,
+  logError,
 };

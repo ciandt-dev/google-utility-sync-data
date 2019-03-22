@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const expect = require('chai').expect;
 const sinon = require('sinon');
 
@@ -47,40 +48,38 @@ describe('Datastore Helper tests', () => {
     });
 
     it('Try to delete entities using delete entities engine with success.', (done) => {
-      const keys = ['1','2','3'];
-        
-        const datastoreDeleteStub = sinon.fake.resolves({
-          'status': 1
-        });
+      const keys = ['1', '2', '3'];
 
-        sinon.replace(Datastore.prototype, 'delete', datastoreDeleteStub);
+      const datastoreDeleteStub = sinon.fake.resolves({
+        'status': 1,
+      });
 
-        new DatastoreHelper('dst-namespace')
+      sinon.replace(Datastore.prototype, 'delete', datastoreDeleteStub);
+
+      new DatastoreHelper('dst-namespace')
           .deleteEntitiesEngine(keys)
           .then((result) => {
             expect(result).to.have.property('status');
             expect(result.keys).to.be.an('array').that.to.have.members(keys);
-            done()
-          })
-
+            done();
+          });
     });
 
     it('Try to delete entities using delete entities engine and fail.', (done) => {
-      const keys = ['1','2','3'];
-        
-        const datastoreDeleteStub = sinon.fake.rejects({});
+      const keys = ['1', '2', '3'];
 
-        sinon.replace(Datastore.prototype, 'delete', datastoreDeleteStub);
+      const datastoreDeleteStub = sinon.fake.rejects({});
 
-        new DatastoreHelper('dst-namespace')
+      sinon.replace(Datastore.prototype, 'delete', datastoreDeleteStub);
+
+      new DatastoreHelper('dst-namespace')
           .deleteEntitiesEngine(keys)
           .then(() => {})
-          .catch(err => {
+          .catch((err) => {
             expect(err).to.not.be.null;
             done();
           });
-
-    });    
+    });
 
     // it('Saves an entity on datastore should thrown an error.', () => {
     //   const datastoreStub = sinon.fake.rejects({});

@@ -33,13 +33,14 @@
     "eslint": "^5.7.0",
     "eslint-config-google": "^0.11.0",
     "mocha": "^6.0.2",
-    "nyc": "^13.1.0",
+    "nyc": "^13.3.0",
     "sinon": "^7.2.4"
   },
   "dependencies": {
     "@google-cloud/bigquery": "^2.0.0",
     "@google-cloud/datastore": "^3.0.0",
     "@google-cloud/firestore": "^0.21.0",
-    "@google-cloud/pubsub": "^0.20.0"
+    "@google-cloud/pubsub": "^0.20.0",
+    "googleapis": "^38.0.0"
   }
 }

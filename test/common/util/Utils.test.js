@@ -1,60 +1,70 @@
-const expect = require('chai').expect;
+const {expect} = require('chai');
+const {logInfo, logError} = require('../../../src/common/util/LogUtil'); // eslint-disable-line
 const sinon = require('sinon');
-const PubSub = require('@google-cloud/pubsub');
 
-const {ErrorUtil, StringUtil} = require('../../../src');
+describe('LogInfo and LogError', () => {
+  const context = {context: 'testcontext', timestamp: 'testtimestamp',
+    type: 'test'};
+  const currentNodeEnv = process.env.NODE_ENV;
 
-describe('Utils tests', () => {
-  describe('#Error utils', () => {
-    beforeEach(() => {
-      sinon.restore();
-    });
-
-    it('Format Error Messages.', () => {
-      const message = 'Format error messages.';
-      const code = 1;
-      const expected = {
-        code: code,
-        message: message,
-      };
-
-      const errorMessage = ErrorUtil.formatErrorMessage(message, code);
-      expect(errorMessage).to.deep.equals(expected);
-    });
-
-    it('Format Error message without code.', () => {
-      const message = 'Format error messages.';
-      const expected = {
-        code: 1,
-        message: message,
-      };
-
-      const errorMessage = ErrorUtil.formatErrorMessage(message, null);
-      expect(errorMessage).to.deep.equals(expected);
-    });
+  beforeEach(() => {
+    sinon.restore();
+    process.env.NODE_ENV = currentNodeEnv;
   });
 
-  describe('#String utils', () => {
-    beforeEach(() => {
-      sinon.restore();
-    });
+  afterEach(() => {
+    process.env.NODE_ENV = currentNodeEnv;
+  });
 
-    it('Generate an hash code.', () => {
-      const message = 'Simple message.';
-      const hash = StringUtil.hashCode(message);
-      expect(hash).to.be.equals('U2ltcGxlIG1lc3NhZ2Uu');
-    });
+  it('Should accept 2 parameters and print message', () => {
+    process.env.NODE_ENV = undefined;
+    const consoleLogInfoFake = sinon.fake(function() {});
+    sinon.replace(console, 'info', consoleLogInfoFake);
+    logInfo(context, 'Info message');
+    expect(consoleLogInfoFake.calledOnce).to.be.true;
 
-    it('Generate simple keywords.', () => {
-      const entity = {
-        code: 12,
-        name: 'Entity',
-        description: 'Description',
-      };
-      const words = StringUtil.generateKeywords(entity, 'code,name');
-      expect(words).to.deep.equals(
-          ['12', 'En', 'Ent', 'Enti', 'Entit', 'Entity']
-              .map((x) => x.toLowerCase()));
-    });
+    const consoleLogErrorFake = sinon.fake(function() {});
+    sinon.replace(console, 'error', consoleLogErrorFake);
+    logError(context, 'Error message');
+    expect(consoleLogErrorFake.calledOnce).to.be.true;
+  });
+
+  it('Should accept 2 parameters but not print message in test env', () => {
+    process.env.NODE_ENV = 'test';
+    const consoleLogInfoFake = sinon.fake(function() {});
+    sinon.replace(console, 'info', consoleLogInfoFake);
+    logInfo(context, 'Info message');
+    expect(consoleLogInfoFake.notCalled).to.be.true;
+
+    const consoleLogErrorFake = sinon.fake(function() {});
+    sinon.replace(console, 'error', consoleLogErrorFake);
+    logError(context, 'Error message');
+    expect(consoleLogErrorFake.notCalled).to.be.true;
+  });
+
+  it('Should accept 3 parameters and print message', () => {
+    process.env.NODE_ENV = undefined;
+    const consoleLogInfoFake = sinon.fake(function() {});
+    sinon.replace(console, 'info', consoleLogInfoFake);
+    logInfo(context, 'Info message', context);
+    expect(consoleLogInfoFake.calledOnce).to.be.true;
+
+    const consoleLogErrorFake = sinon.fake(function() {});
+    sinon.replace(console, 'error', consoleLogErrorFake);
+    logError(context, 'Error message', context);
+    expect(consoleLogErrorFake.calledOnce).to.be.true;
+  });
+
+  it('Should accept 3 parameters but not print message in test env', () => {
+    process.env.NODE_ENV = 'test';
+    const consoleLogInfoFake = sinon.fake(function() {});
+    sinon.replace(console, 'info', consoleLogInfoFake);
+    logInfo(context, 'Info message', context);
+    expect(consoleLogInfoFake.notCalled).to.be.true;
+
+    const consoleLogErrorFake = sinon.fake(function() {});
+    sinon.replace(console, 'error', consoleLogErrorFake);
+    logError(context, 'Error message', context);
+    expect(consoleLogErrorFake.notCalled).to.be.true;
   });
 });
