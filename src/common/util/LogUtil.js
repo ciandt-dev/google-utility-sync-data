@@ -21,9 +21,9 @@ const logFactory = (context, message) => {
    */
 const logInfo = (context, message, obj) => {
   const toLog = logFactory(context, message);
-  if (process.env.NODE_ENV !== 'test') {
+  // if (process.env.NODE_ENV !== 'test') {
       obj ? console.info(toLog, obj) : console.info(toLog, context);
-  }
+  // }
 };
 
 /**
@@ -34,9 +34,9 @@ const logInfo = (context, message, obj) => {
    */
 const logError = (context, message, err) => {
   const toLog = logFactory(context, message);
-  if (process.env.NODE_ENV !== 'test') {
+  // if (process.env.NODE_ENV !== 'test') {
       err ? console.error(toLog, err) : console.error(toLog, context);
-  }
+  // }
 };
 
 module.exports = {
