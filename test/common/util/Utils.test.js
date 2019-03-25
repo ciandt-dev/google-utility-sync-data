@@ -1,6 +1,9 @@
 const {expect} = require('chai');
-const {logInfo, logError} = require('../../../src/common/util/LogUtil'); // eslint-disable-line
+const LogUtil = require('../../../src/common/util/LogUtil');
 const sinon = require('sinon');
+
+log = new LogUtil('UNIT TESTES', 'x');
+noLog = new LogUtil('UNIT TESTES', 'test');
 
 describe('LogInfo and LogError', () => {
   const context = {context: 'testcontext', timestamp: 'testtimestamp',
@@ -20,25 +23,24 @@ describe('LogInfo and LogError', () => {
     process.env.NODE_ENV = undefined;
     const consoleLogInfoFake = sinon.fake(function() {});
     sinon.replace(console, 'info', consoleLogInfoFake);
-    logInfo(context, 'Info message');
+    log.logInfo(context, 'Info message');
     expect(consoleLogInfoFake.calledOnce).to.be.true;
 
     const consoleLogErrorFake = sinon.fake(function() {});
     sinon.replace(console, 'error', consoleLogErrorFake);
-    logError(context, 'Error message');
+    log.logError(context, 'Error message');
     expect(consoleLogErrorFake.calledOnce).to.be.true;
   });
 
   it('Should accept 2 parameters but not print message in test env', () => {
-    process.env.NODE_ENV = 'test';
     const consoleLogInfoFake = sinon.fake(function() {});
     sinon.replace(console, 'info', consoleLogInfoFake);
-    logInfo(context, 'Info message');
+    noLog.logInfo(context, 'Info message');
     expect(consoleLogInfoFake.notCalled).to.be.true;
 
     const consoleLogErrorFake = sinon.fake(function() {});
     sinon.replace(console, 'error', consoleLogErrorFake);
-    logError(context, 'Error message');
+    noLog.logError(context, 'Error message');
     expect(consoleLogErrorFake.notCalled).to.be.true;
   });
 
@@ -46,25 +48,24 @@ describe('LogInfo and LogError', () => {
     process.env.NODE_ENV = undefined;
     const consoleLogInfoFake = sinon.fake(function() {});
     sinon.replace(console, 'info', consoleLogInfoFake);
-    logInfo(context, 'Info message', context);
+    log.logInfo(context, 'Info message', context);
     expect(consoleLogInfoFake.calledOnce).to.be.true;
 
     const consoleLogErrorFake = sinon.fake(function() {});
     sinon.replace(console, 'error', consoleLogErrorFake);
-    logError(context, 'Error message', context);
+    log.logError(context, 'Error message', context);
     expect(consoleLogErrorFake.calledOnce).to.be.true;
   });
 
   it('Should accept 3 parameters but not print message in test env', () => {
-    process.env.NODE_ENV = 'test';
     const consoleLogInfoFake = sinon.fake(function() {});
     sinon.replace(console, 'info', consoleLogInfoFake);
-    logInfo(context, 'Info message', context);
+    noLog.logInfo(context, 'Info message', context);
     expect(consoleLogInfoFake.notCalled).to.be.true;
 
     const consoleLogErrorFake = sinon.fake(function() {});
     sinon.replace(console, 'error', consoleLogErrorFake);
-    logError(context, 'Error message', context);
+    noLog.logError(context, 'Error message', context);
     expect(consoleLogErrorFake.notCalled).to.be.true;
   });
 });
