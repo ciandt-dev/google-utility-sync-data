@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 const {google} = require('googleapis');
 const dataflow = google.dataflow('v1b3');
-const {LogUtil} = require('../util/LogUtil');
+const LogUtil = require('../util/LogUtil');
 
 /**
  * DataFlow Helper.
