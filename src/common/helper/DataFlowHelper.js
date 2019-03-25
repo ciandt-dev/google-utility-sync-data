@@ -98,25 +98,25 @@ class DataFlowHelper {
  */
   sendToDataFlow(context, template) {
     return new Promise((_resolve, _reject) => {
-      logInfo(context, '[DATAFLOW] Launching a new pipeline :: template:'
+      this.log.logInfo(context, '[DATAFLOW] Launching a new pipeline :: template:'
           , template);
 
       const _request = this.requestFactory(context, template);
-      logInfo(context, '[DATAFLOW] REQUEST ::', _request);
+      this.log.logInfo(context, '[DATAFLOW] REQUEST ::', _request);
 
       this.authDataFlow()
           .then((auth) => {
             _request.auth = auth;
             this.launchFlow(_request)
                 .then((r) => {
-                  logInfo(context, '[DATAFLOW] Launched with success!', r);
+                  this.log.logInfo(context, '[DATAFLOW] Launched with success!', r);
                   _resolve(context);
                 }).catch((err) => {
                   _reject(err);
                 });
           })
           .catch((error) => {
-            logError(context, 'Err', error);
+            this.log.logError(context, 'Err', error);
             _reject(error);
           });
     });
