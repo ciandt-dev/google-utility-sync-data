@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 const {google} = require('googleapis');
 const dataflow = google.dataflow('v1b3');
-const {logInfo, logError} = require('../util/LogUtil');
+const {LogUtil} = require('../util/LogUtil');
 
 /**
  * DataFlow Helper.
@@ -9,9 +9,20 @@ const {logInfo, logError} = require('../util/LogUtil');
 class DataFlowHelper {
   /**
    * Constructor for DataFlow Helper.
+   * @param {object} obj
+   * Eg.: {
+   *    kind: 'abc',
+   *    logEnvironment: 'teste'
+   * }
    * @constructor
    */
-  constructor() {}
+  constructor(obj) {
+    if (obj) {
+      this.log = new LogUtil(obj.kind, obj.logEnvironment);
+    } else {
+      this.log = new LogUtil('DATA FLOW', '');
+    }
+  }
 
   /**
  * Build a object to request a new pipeline launch.
