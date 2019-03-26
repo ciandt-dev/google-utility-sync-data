@@ -33,6 +33,7 @@ class DataFlowHelper {
   requestFactory(context, template) {
     const project = context.dstProjectId;
     const bucket = `${project.replace(/\W/g, '-').replace('google-com-', '').toLowerCase()}-dataflow`;
+    console.log('DEBUG>>>>>>>>>>>>>>>>>>>>>>>>>>', bucket);
     const strContext = this.getContextString(context);
 
     return {
