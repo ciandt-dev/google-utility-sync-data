@@ -215,7 +215,6 @@ class BigQueryHelper {
   checkCopyViewJobStatus(data) {
     return new Promise((_resolve, _reject) => {
       const job = data[0];
-      this.log.logInfo(this.context, 'Listeners created!');
 
       job.on('complete', (metadata) => {
         this.log.logInfo(this.context, 'Copy view finished with suceess!');
@@ -227,6 +226,8 @@ class BigQueryHelper {
         this.log.logError(this.context, 'An error happened during copy of view!');
         _reject(err);
       });
+
+      this.log.logInfo(this.context, 'Listeners created!');
     });
   }
 
