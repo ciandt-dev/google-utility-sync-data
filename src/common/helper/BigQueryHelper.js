@@ -29,6 +29,8 @@ class BigQueryHelper {
 
       };
     }
+
+    this.log.logInfo(this.context, '>>>>>>>');
   }
 
   /**
