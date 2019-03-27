@@ -20,7 +20,7 @@ class DataFlowHelper {
     if (obj) {
       this.log = new LogUtil(obj.kind, obj.logEnvironment);
     } else {
-      this.log = new LogUtil('DATA FLOW', '');
+      this.log = new LogUtil('DATA FLOW HELPER', '');
     }
   }
 

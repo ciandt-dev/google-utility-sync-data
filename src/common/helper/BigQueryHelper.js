@@ -1,4 +1,5 @@
 const {BigQuery} = require('@google-cloud/bigquery');
+const LogUtil = require('../util/LogUtil');
 
 /**
  * BigQuery Helper.
@@ -7,11 +8,27 @@ class BigQueryHelper {
   /**
    * Constructor for BiqQuery Helper.
    * @param {String} projectId Google Project ID
+   * @param {object} obj
+   * Eg.: {
+   *    kind: 'abc',
+   *    logEnvironment: 'teste'
+   * }
    * @constructor
    */
-  constructor(projectId) {
+  constructor(projectId, obj) {
     const options = projectId ? {projectId: projectId} : {};
     this.bigquery = new BigQuery(options);
+
+    if (obj) {
+      this.log = new LogUtil(obj.kind, obj.logEnvironment);
+      this.context = obj.context;
+    } else {
+      this.log = new LogUtil('BIG QUERY HELPER', '');
+      this.context = {
+        type: 'N/a',
+
+      };
+    }
   }
 
   /**
@@ -88,7 +105,7 @@ class BigQueryHelper {
         reject('Missing job.');
       }
 
-      console.info(`Job ${job.id} completed.`);
+      this.log.logInfo(this.context, `Job ${job.id} completed.`);
 
       // Check the job's status for errors
       const errors = job.status.errors;
@@ -196,8 +213,21 @@ class BigQueryHelper {
    * @return {Promise}
    */
   checkCopyViewJobStatus(data) {
-    const job = data[0];
-    return job.getQueryResults();
+    return new Promise((_resolve, _reject) => {
+      const job = data[0];
+      this.log.logInfo(this.context, 'Listeners created!');
+
+      job.on('complete', (metadata) => {
+        this.log.logInfo(this.context, 'Copy view finished with suceess!');
+        _resolve(metadata);
+      });
+
+      job.on('error', (err) => {
+        // eslint-disable-next-line max-len
+        this.log.logError(this.context, 'An error happened during copy of view!');
+        _reject(err);
+      });
+    });
   }
 
   /**
