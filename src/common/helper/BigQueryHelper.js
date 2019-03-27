@@ -219,13 +219,10 @@ class BigQueryHelper {
       const job = data[0];
 
       job.on('complete', (metadata) => {
-        this.log.logInfo(this.context, 'Copy view finished with suceess!');
         _resolve(metadata);
       });
 
       job.on('error', (err) => {
-        // eslint-disable-next-line max-len
-        this.log.logError(this.context, 'An error happened during copy of view!');
         _reject(err);
       });
 
