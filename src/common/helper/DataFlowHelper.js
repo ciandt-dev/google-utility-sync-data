@@ -55,11 +55,9 @@ class DataFlowHelper {
         environment: {
           tempLocation: `gs://${bucket}/temp`,
         },
-        autoscalingSettings: {
-          maxNumWorkers: 50,
-        }
       },
       gcsPath: `gs://${bucket}/templates/${template}.json`,
+      maxNumWorkers: 50,
     };
   };
 
