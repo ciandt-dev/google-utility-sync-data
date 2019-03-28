@@ -199,12 +199,14 @@ class BigQueryHelper {
           .then((isResourceView) => {
             this.log.logInfo(this.context, 'copy resource is view');
             if (isResourceView) {
+              this.log.logInfo(this.context, 'is view');
               this.copyView(
                   srcProjectId, srcDatasetId, srcResourceId,
                   dstProjectId, dstDatasetId, dstTableId
               ).then(this.checkCopyViewJobStatus)
                   .then(resolve).catch(reject);
             } else {
+              this.log.logInfo(this.context, 'is table');
               this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
                   dstProjectId, dstDatasetId, dstTableId
               ).then(resolve).catch(reject);
