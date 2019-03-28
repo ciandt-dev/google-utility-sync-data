@@ -220,11 +220,8 @@ class BigQueryHelper {
    * @return {Promise}
    */
   checkCopyViewJobStatus(data) {
-    this.log.logInfo(this.context, 'checkCopyViewJobStatus');
     return new Promise((_resolve, _reject) => {
       const job = data[0];
-
-      this.log.logInfo(this.context, 'checkCopyViewJobStatus 222');
 
       job.on('complete', (metadata) => {
         _resolve(metadata);
@@ -233,8 +230,6 @@ class BigQueryHelper {
       job.on('error', (err) => {
         _reject(err);
       });
-
-      this.log.logInfo(this.context, 'Listeners created!');
     });
   }
 
