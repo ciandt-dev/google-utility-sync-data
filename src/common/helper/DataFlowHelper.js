@@ -57,7 +57,6 @@ class DataFlowHelper {
         },
       },
       gcsPath: `gs://${bucket}/templates/${template}.json`,
-      maxNumWorkers: 50,
     };
   };
 
