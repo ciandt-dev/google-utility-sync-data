@@ -12,6 +12,7 @@ class BigQueryHelper {
    *    projectId: 'gfw-web-google'
    *    kind: 'abc',
    *    logEnvironment: 'teste'
+   *    context: {}
    * }
    * @constructor
    */
@@ -78,7 +79,6 @@ class BigQueryHelper {
    * @return {Promise}
    */
   createQueryJob(options) {
-    this.log.logInfo(this.context, 'createQueryJob');
     return this.bigquery.createQueryJob(options);
   }
 
@@ -136,7 +136,6 @@ class BigQueryHelper {
    */
   isView(projectId, datasetId, objectId) {
     return new Promise((resolve, reject) => {
-      this.log.logInfo(this.context, 'isVIEW');
       this.metadata(projectId, datasetId, objectId)
           .then((data) => {
             resolve(data[0].type === 'VIEW');
@@ -158,11 +157,9 @@ class BigQueryHelper {
   copyView(srcProjectId, srcDatasetId, srcViewId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      this.log.logInfo(this.context, 'copyView');
       this.metadata(srcProjectId, srcDatasetId, srcViewId)
           .then((data) => {
             const view = data[0].view;
-            this.log.logInfo(this.context, 'metadata');
             this.createQueryJob({
               query: view.query,
               useLegacySql: view.useLegacySql,
@@ -188,19 +185,15 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcResourceId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      this.log.logInfo(this.context, 'copy resource');
       this.isView(srcProjectId, srcDatasetId, srcResourceId)
           .then((isResourceView) => {
-            this.log.logInfo(this.context, 'copy resource is view');
             if (isResourceView) {
-              this.log.logInfo(this.context, 'is view');
               this.copyView(
                   srcProjectId, srcDatasetId, srcResourceId,
                   dstProjectId, dstDatasetId, dstTableId
               ).then(this.checkCopyViewJobStatus)
                   .then(resolve).catch(reject);
             } else {
-              this.log.logInfo(this.context, 'is table');
               this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
                   dstProjectId, dstDatasetId, dstTableId
               ).then(resolve).catch(reject);
