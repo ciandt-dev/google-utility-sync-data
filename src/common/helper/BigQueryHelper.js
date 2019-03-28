@@ -107,8 +107,6 @@ class BigQueryHelper {
         reject('Missing job.');
       }
 
-      this.log.logInfo(this.context, `Job ${job.id} completed.`);
-
       // Check the job's status for errors
       const errors = job.status.errors;
       if (errors && errors.length > 0) {
