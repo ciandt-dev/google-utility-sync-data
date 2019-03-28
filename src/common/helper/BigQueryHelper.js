@@ -83,6 +83,7 @@ class BigQueryHelper {
    * @return {Promise}
    */
   createQueryJob(options) {
+    this.log.logInfo(this.context, 'createQueryJob');
     return this.bigquery.createQueryJob(options);
   }
 
