@@ -164,10 +164,11 @@ class BigQueryHelper {
   copyView(srcProjectId, srcDatasetId, srcViewId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
+      this.log.logInfo(this.context, 'copyView');
       this.metadata(srcProjectId, srcDatasetId, srcViewId)
           .then((data) => {
             const view = data[0].view;
-
+            this.log.logInfo(this.context, 'metadata');
             this.createQueryJob({
               query: view.query,
               useLegacySql: view.useLegacySql,
@@ -218,10 +219,11 @@ class BigQueryHelper {
    * @return {Promise}
    */
   checkCopyViewJobStatus(data) {
+    this.log.logInfo(this.context, 'checkCopyViewJobStatus');
     return new Promise((_resolve, _reject) => {
       const job = data[0];
 
-      this.log.logInfo(this.context, 'checkCopyViewJobStatus');
+      this.log.logInfo(this.context, 'checkCopyViewJobStatus 222');
 
       job.on('complete', (metadata) => {
         _resolve(metadata);
