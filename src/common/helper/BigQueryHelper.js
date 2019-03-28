@@ -7,31 +7,26 @@ const LogUtil = require('../util/LogUtil');
 class BigQueryHelper {
   /**
    * Constructor for BiqQuery Helper.
-   * @param {String} projectId Google Project ID
    * @param {object} obj
    * Eg.: {
+   *    projectId: 'gfw-web-google'
    *    kind: 'abc',
    *    logEnvironment: 'teste'
    * }
    * @constructor
    */
-  constructor(projectId, obj) {
-    const options = projectId ? {projectId: projectId} : {};
+  constructor(obj) {
+    const _obj = obj ? obj : {};
+    const options = _obj.projectId ? {projectId: _obj.projectId} : {};
     this.bigquery = new BigQuery(options);
 
-    if (obj) {
-      this.log = new LogUtil(obj.kind, obj.logEnvironment);
-      this.context = obj.context;
-    } else {
+    this.log = _obj.kind && _obj.logEnvironment ?
+      new LogUtil(_obj.kind, _obj.logEnvironment) :
       this.log = new LogUtil('BIG QUERY HELPER', '');
-      this.context = {
-        type: 'N/a',
 
-      };
-    }
-
-    this.log.logInfo(this.context, '>>>>>>>');
+    this.context = _obj.context ? _obj.context : {type: 'N/a'};
   }
+
 
   /**
    * Copy table from a dataset.
