@@ -142,6 +142,7 @@ class BigQueryHelper {
    */
   isView(projectId, datasetId, objectId) {
     return new Promise((resolve, reject) => {
+      this.log.logInfo(this.context, 'isVIEW');
       this.metadata(projectId, datasetId, objectId)
           .then((data) => {
             resolve(data[0].type === 'VIEW');
@@ -192,8 +193,10 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcResourceId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
+      this.log.logInfo(this.context, 'copy resource');
       this.isView(srcProjectId, srcDatasetId, srcResourceId)
           .then((isResourceView) => {
+            this.log.logInfo(this.context, 'copy resource is view');
             if (isResourceView) {
               this.copyView(
                   srcProjectId, srcDatasetId, srcResourceId,
@@ -217,6 +220,8 @@ class BigQueryHelper {
   checkCopyViewJobStatus(data) {
     return new Promise((_resolve, _reject) => {
       const job = data[0];
+
+      this.log.logInfo(this.context, 'checkCopyViewJobStatus');
 
       job.on('complete', (metadata) => {
         _resolve(metadata);
