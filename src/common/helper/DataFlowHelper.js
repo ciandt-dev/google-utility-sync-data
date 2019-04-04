@@ -51,6 +51,7 @@ class DataFlowHelper {
           idConnector: String(context.connector.id),
           pubSubErrorNotificationTopic: `projects/${project}/topics/handleErrors`,
           pubSubSuccessNotificationTopic: `projects/${project}/topics/postExecution`,
+          columnsToConsiderInKeywords: context.columnsToConsiderInKeywords,
         },
         environment: {
           tempLocation: `gs://${bucket}/temp`,
