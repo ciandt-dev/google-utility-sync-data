@@ -1,4 +1,5 @@
 const {BigQuery} = require('@google-cloud/bigquery');
+const LogUtil = require('../util/LogUtil');
 
 /**
  * BigQuery Helper.
@@ -6,13 +7,27 @@ const {BigQuery} = require('@google-cloud/bigquery');
 class BigQueryHelper {
   /**
    * Constructor for BiqQuery Helper.
-   * @param {String} projectId Google Project ID
+   * @param {object} obj
+   * Eg.: {
+   *    projectId: 'gfw-web-google'
+   *    kind: 'abc',
+   *    logEnvironment: 'teste'
+   *    context: {}
+   * }
    * @constructor
    */
-  constructor(projectId) {
-    const options = projectId ? {projectId: projectId} : {};
+  constructor(obj) {
+    const _obj = obj ? obj : {};
+    const options = _obj.projectId ? {projectId: _obj.projectId} : {};
     this.bigquery = new BigQuery(options);
+
+    this.log = _obj.kind && _obj.logEnvironment ?
+      new LogUtil(_obj.kind, _obj.logEnvironment) :
+      this.log = new LogUtil('BIG QUERY HELPER', '');
+
+    this.context = _obj.context ? _obj.context : {type: 'N/a'};
   }
+
 
   /**
    * Copy table from a dataset.
@@ -84,8 +99,9 @@ class BigQueryHelper {
   checkBigQueryCopyErrors(results) {
     return new Promise((resolve, reject) => {
       const job = results[0];
-
-      console.info(`Job ${job.id} completed.`);
+      if (!job) {
+        reject('Missing job.');
+      }
 
       // Check the job's status for errors
       const errors = job.status.errors;
@@ -144,7 +160,6 @@ class BigQueryHelper {
       this.metadata(srcProjectId, srcDatasetId, srcViewId)
           .then((data) => {
             const view = data[0].view;
-
             this.createQueryJob({
               query: view.query,
               useLegacySql: view.useLegacySql,
@@ -193,8 +208,31 @@ class BigQueryHelper {
    * @return {Promise}
    */
   checkCopyViewJobStatus(data) {
-    const job = data[0];
-    return job.getQueryResults();
+    return new Promise((_resolve, _reject) => {
+      const job = data[0];
+
+      job.on('complete', (metadata) => {
+        _resolve(metadata);
+      });
+
+      job.on('error', (err) => {
+        _reject(err);
+      });
+    });
+  }
+
+  /**
+   * Delete a Biquery Table.
+   * @param {string} projectId
+   * @param {string} datasetId
+   * @param {string} tableId
+   * @return {Promise}
+   */
+  delete(projectId, datasetId, tableId) {
+    return new BigQuery({projectId: projectId})
+        .dataset(datasetId)
+        .table(tableId)
+        .delete();
   }
 }
 

@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 const expect = require('chai').expect;
 const sinon = require('sinon');
 
-const Datastore = require('@google-cloud/datastore');
+const {Datastore} = require('@google-cloud/datastore');
 const {DatastoreHelper} = require('../../../src');
 
 describe('Datastore Helper tests', () => {
@@ -46,21 +47,55 @@ describe('Datastore Helper tests', () => {
           });
     });
 
-    it('Saves an entity on datastore should thrown an error.', () => {
-      const datastoreStub = sinon.fake.rejects({});
-      sinon.replace(Datastore.prototype, 'save', datastoreStub);
+    it('Try to delete entities using delete entities engine with success.', (done) => {
+      const keys = ['1', '2', '3'];
 
-      const entity = {
-        name: 'testing',
-        description: 'description',
-      };
+      const datastoreDeleteStub = sinon.fake.resolves({
+        'status': 1,
+      });
+
+      sinon.replace(Datastore.prototype, 'delete', datastoreDeleteStub);
 
       new DatastoreHelper('dst-namespace')
-          .save('Kind', entity)
-          .catch(() => {
-            expect(datastoreStub.calledOnce).to.be.true;
+          .deleteEntitiesEngine(keys)
+          .then((result) => {
+            expect(result).to.have.property('status');
+            expect(result.keys).to.be.an('array').that.to.have.members(keys);
+            done();
           });
     });
+
+    it('Try to delete entities using delete entities engine and fail.', (done) => {
+      const keys = ['1', '2', '3'];
+
+      const datastoreDeleteStub = sinon.fake.rejects({});
+
+      sinon.replace(Datastore.prototype, 'delete', datastoreDeleteStub);
+
+      new DatastoreHelper('dst-namespace')
+          .deleteEntitiesEngine(keys)
+          .then(() => {})
+          .catch((err) => {
+            expect(err).to.not.be.null;
+            done();
+          });
+    });
+
+    // it('Saves an entity on datastore should thrown an error.', () => {
+    //   const datastoreStub = sinon.fake.rejects({});
+    //   sinon.replace(Datastore.prototype, 'save', datastoreStub);
+
+    //   const entity = {
+    //     name: 'testing',
+    //     description: 'description',
+    //   };
+
+    //   new DatastoreHelper('dst-namespace')
+    //       .save('Kind', entity)
+    //       .catch(() => {
+    //         expect(datastoreStub.calledOnce).to.be.true;
+    //       });
+    // });
 
     it('Update an entity on datastore.', () => {
       const entity = {

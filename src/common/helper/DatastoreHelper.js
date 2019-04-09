@@ -1,8 +1,7 @@
 const {Datastore} = require('@google-cloud/datastore');
 const {chunckArray} = require('../util/ArrayUtil');
 
-const INTERVAL_SAVE_ENTITIES_BATCH = 3000;
-const MAX_CHUNK_SIZE = 300;
+const MAX_CHUNK_SIZE = 50;
 
 /**
  * Datastore Helper.
@@ -29,7 +28,7 @@ class DatastoreHelper {
     if (!kind || !entity) {
       throw Error('Nothing to be save.');
     }
-    return this.datastore.save(this._prepare(kind, entity, kindId));
+    return this.datastore.upsert(this._prepare(kind, entity, kindId));
   }
 
 
@@ -47,12 +46,12 @@ class DatastoreHelper {
 
     return new Promise((resolve, reject) => {
       const key = this.datastore.key([kind, kindId]);
-
       this.datastore.get(key).then((response) => {
-        const updatedEntity = Object.assign(response[0], entity);
-        const task = this._prepare(kind, updatedEntity, kindId);
+        const data = response ? response[0] : {};
+        const updatedEntity = Object.assign(data, entity);
+        const toSave = this._prepare(kind, updatedEntity, kindId);
 
-        this.datastore.save(task).then(resolve).catch(reject);
+        this.datastore.save(toSave).then(resolve).catch(reject);
       }).catch(reject);
     });
   }
@@ -77,28 +76,47 @@ class DatastoreHelper {
    * Delete many entities.
    * @param {string} kind
    * @param {array} rawKeys
+   * @param {int} chunk
    * @return {Promise}
    */
-  deleteEntities(kind, rawKeys) {
+  deleteEntities(kind, rawKeys, chunk) {
     if (!rawKeys) {
       throw Error('Nothing to be delete.');
     }
 
-    const rows = chunckArray(rawKeys, MAX_CHUNK_SIZE);
+    const _chunk = chunk || MAX_CHUNK_SIZE;
+    const _chunksOfKeys = [];
+    const _rows = chunckArray(rawKeys, _chunk);
 
+    _rows.forEach((chuncks) => {
+      const _keys = chuncks.map((item) => this.datastore.key([kind, item]));
+      _chunksOfKeys.push(this.deleteEntitiesEngine(_keys));
+    });
+
+    return Promise.all(_chunksOfKeys);
+  }
+
+
+  /**
+   * Digest the keys to be deleted.
+   * @param {Array} _keys
+   * @return {Promise}
+   */
+  deleteEntitiesEngine(_keys) {
     return new Promise((resolve, reject) => {
-      rows.forEach((row) => {
-        this._sleep(INTERVAL_SAVE_ENTITIES_BATCH).then(() => {
-          row.forEach((rawKey) => {
-            const key = this.datastore.key([kind, rawKey]);
-            this.datastore.delete(key).catch(reject);
-          });
+      this.datastore.delete(_keys).then((result) => {
+        console.log('Success:', result);
+        resolve({
+          'status': 'success',
+          'keys': _keys,
         });
+      }).catch((err) => {
+        console.error('Err on Delete Entities:', err);
+        reject(err);
       });
-
-      resolve();
     });
   }
+
 
   /**
    * Filter a kind by property;
