@@ -1,5 +1,6 @@
 const PubSubHelper = require('./common/helper/PubSubHelper');
 const DatastoreHelper = require('./common/helper/DatastoreHelper');
+const DataFlowHelper = require('./common/helper/DataFlowHelper');
 const BigQueryHelper = require('./common/helper/BigQueryHelper');
 const ErrorUtil = require('./common/util/ErrorUtil');
 const StringUtil = require('./common/util/StringUtil');
@@ -14,6 +15,7 @@ const {SyncDataTaskManager, SyncDataTaskManagerStatus} =
 module.exports = {
   PubSubHelper,
   DatastoreHelper,
+  DataFlowHelper,
   BigQueryHelper,
   ErrorUtil,
   StringUtil,
