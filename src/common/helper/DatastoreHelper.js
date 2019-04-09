@@ -45,8 +45,7 @@ class DatastoreHelper {
     }
 
     return new Promise((resolve, reject) => {
-      const key = this.datastore.key([kind, kindId]);
-      this.datastore.get(key).then((response) => {
+      this.getEntity(kind, kindId).then((response) => {
         const data = response ? response[0] : {};
         const updatedEntity = Object.assign(data, entity);
         const toSave = this._prepare(kind, updatedEntity, kindId);
@@ -54,6 +53,20 @@ class DatastoreHelper {
         this.datastore.save(toSave).then(resolve).catch(reject);
       }).catch(reject);
     });
+  }
+
+  /**
+   * Fetch entity from Datastore.
+   * @param {string} kind The kind name.
+   * @param {string} kindId The kind id.
+   * @return {Promise}
+   */
+  getEntity(kind, kindId) {
+    if (!kind || !kindId) {
+      throw Error('All parameters are required.');
+    }
+    const key = this.datastore.key([kind, kindId]);
+    return this.datastore.get(key);
   }
 
   /**
