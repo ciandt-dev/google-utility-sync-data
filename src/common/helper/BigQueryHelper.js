@@ -23,7 +23,7 @@ class BigQueryHelper {
 
     this.log = _obj.kind && _obj.logEnvironment ?
       new LogUtil(_obj.kind, _obj.logEnvironment) :
-      this.log = new LogUtil('BIG QUERY HELPER', '');
+      new LogUtil('BIG QUERY HELPER', '');
 
     this.context = _obj.context ? _obj.context : {type: 'N/a'};
   }
