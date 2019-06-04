@@ -46,6 +46,7 @@ class DatastoreHelper {
 
     return new Promise((resolve, reject) => {
       this.getEntity(kind, kindId).then((response) => {
+        console.log('##### Get entity response:', response);
         const data = response ? response[0] : {};
         const updatedEntity = Object.assign(data, entity);
         const toSave = this._prepare(kind, updatedEntity, kindId);
