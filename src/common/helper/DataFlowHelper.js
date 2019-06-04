@@ -59,7 +59,7 @@ class DataFlowHelper {
       },
       gcsPath: `gs://${bucket}/templates/${template}.json`,
     };
-  };
+  }
 
   /**
    * Get context in string mode.
@@ -70,7 +70,7 @@ class DataFlowHelper {
     const _context = JSON.parse(JSON.stringify(context));
     delete _context.readQuery;
     return JSON.stringify(_context);
-  };
+  }
 
   /**
    * Responsible to launch the flow.
@@ -79,7 +79,7 @@ class DataFlowHelper {
    */
   launchFlow(_request) {
     return dataflow.projects.templates.launch(_request);
-  };
+  }
 
   /**
    * Autho Dataflow.
@@ -89,7 +89,7 @@ class DataFlowHelper {
     return google.auth.getClient({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
-  };
+  }
 
   /**
  * Launch a new pipeline on Google Data Flow.
@@ -99,8 +99,7 @@ class DataFlowHelper {
  */
   sendToDataFlow(context, template) {
     return new Promise((_resolve, _reject) => {
-      this.log.logInfo(context, '[DATAFLOW] Launching a new pipeline :: template:'
-          , template);
+      this.log.logInfo(context, '[DATAFLOW] Launching a new pipeline :: template:', template);
 
       const _request = this.requestFactory(context, template);
       this.log.logInfo(context, '[DATAFLOW] REQUEST ::', _request);
@@ -121,7 +120,7 @@ class DataFlowHelper {
             _reject(error);
           });
     });
-  };
+  }
 }
 
 

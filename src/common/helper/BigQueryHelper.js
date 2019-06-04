@@ -100,7 +100,7 @@ class BigQueryHelper {
     return new Promise((resolve, reject) => {
       const job = results[0];
       if (!job) {
-        reject('Missing job.');
+        reject(new Error('Missing job.'));
       }
 
       // Check the job's status for errors
