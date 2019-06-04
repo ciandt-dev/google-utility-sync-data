@@ -19,6 +19,9 @@
     "bigquery"
   ],
   "author": "ciandt",
+  "engines": {
+    "node": ">=8.10.0"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ciandt-dev/google-utility-sync-data/issues"
@@ -30,17 +33,16 @@
   ],
   "devDependencies": {
     "chai": "^4.2.0",
-    "eslint": "^5.7.0",
-    "eslint-config-google": "^0.11.0",
-    "mocha": "^6.0.2",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
+    "mocha": "^6.1.4",
     "nyc": "^13.3.0",
-    "sinon": "^7.2.4"
+    "sinon": "^7.3.2"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^2.0.0",
-    "@google-cloud/datastore": "^3.0.0",
-    "@google-cloud/firestore": "^0.21.0",
-    "@google-cloud/pubsub": "^0.20.0",
-    "googleapis": "^38.0.0"
+    "@google-cloud/bigquery": "^4.0.0",
+    "@google-cloud/datastore": "^4.0.0",
+    "@google-cloud/pubsub": "^0.29.1",
+    "googleapis": "^40.0.0"
   }
 }
