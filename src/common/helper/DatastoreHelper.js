@@ -67,6 +67,7 @@ class DatastoreHelper {
       throw Error('All parameters are required.');
     }
     const key = this.datastore.key([kind, kindId]);
+    console.log('##### Key', key);
     return this.datastore.get(key);
   }
 
