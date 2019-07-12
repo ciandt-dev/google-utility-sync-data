@@ -1,6 +1,6 @@
 {
   "name": "google-utility-sync-data",
-  "version": "1.1.16",
+  "version": "1.1.18",
   "description": "Utilities to work with async data on google platform.",
   "main": "./src/index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "sinon": "^7.2.4"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^2.0.0",
+    "@google-cloud/bigquery": "^4.1.4",
     "@google-cloud/datastore": "^3.0.0",
     "@google-cloud/firestore": "^0.21.0",
     "@google-cloud/pubsub": "^0.20.0",
