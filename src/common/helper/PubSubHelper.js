@@ -1,4 +1,4 @@
-const PubSub = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 
 /**
  * PubSub Helper.
@@ -22,7 +22,6 @@ class PubSubHelper {
     return new Promise((resolve, reject) => {
       new PubSub()
           .topic(topic)
-          .publisher()
           .publish(buffer)
           .then((results) => {
             console.info(
