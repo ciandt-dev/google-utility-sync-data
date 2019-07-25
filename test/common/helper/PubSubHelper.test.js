@@ -12,31 +12,26 @@ describe('PubSub Helper tests', () => {
       sinon.restore();
     });
 
-    it('Publish a simple message on PubSub.', () => {
+    it('Publish a simple message on PubSub.', (done) => {
       const pubSubStub = sinon.fake.resolves({});
-      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic').returns({
-        publisher: sinon.fake.returns({
-          publish: pubSubStub,
-        }),
-      });
+      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic')
+        .returns({publish: pubSubStub});
       const message = 'Simple message';
 
       new PubSubHelper()
           .publish('topic', message);
 
       expect(topicPublishStub.calledOnce).to.be.true;
+      done();
     });
 
     it('Error on publish a message.', () => {
       const pubSubStub = sinon.fake.rejects();
-      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic').returns({
-        publisher: sinon.fake.returns({
-          publish: pubSubStub,
-        }),
-      });
+      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic')
+        .returns({publish: pubSubStub});
       const message = 'Simple message';
 
-      new PubSubHelper()
+      return new PubSubHelper()
           .publish('topic', message)
           .catch((err) => {
             expect(topicPublishStub.calledOnce).to.be.true;
@@ -48,16 +43,13 @@ describe('PubSub Helper tests', () => {
 
     it('Publish an error message.', () => {
       const pubSubStub = sinon.fake.resolves({});
-      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic').returns({
-        publisher: sinon.fake.returns({
-          publish: pubSubStub,
-        }),
-      });
+      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic')
+        .returns({publish: pubSubStub});
       const error = {message: 'An error messages'};
 
       sinon.replace(console, 'info', consoleLogFake);
 
-      new PubSubHelper()
+      return new PubSubHelper()
           .publishError('topic', error)
           .then(() => {
             expect(topicPublishStub.calledOnce).to.be.true;
@@ -69,16 +61,13 @@ describe('PubSub Helper tests', () => {
 
     it('Publish an error message with a code.', () => {
       const pubSubStub = sinon.fake.resolves({});
-      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic').returns({
-        publisher: sinon.fake.returns({
-          publish: pubSubStub,
-        }),
-      });
+      const topicPublishStub = sinon.stub(PubSub.prototype, 'topic')
+        .returns({publish: pubSubStub});
       const error = {code: 5, message: 'An error messages'};
 
       sinon.replace(console, 'info', consoleLogFake);
 
-      new PubSubHelper()
+      return new PubSubHelper()
           .publishError('topic', error)
           .then(() => {
             expect(topicPublishStub.calledOnce).to.be.true;
