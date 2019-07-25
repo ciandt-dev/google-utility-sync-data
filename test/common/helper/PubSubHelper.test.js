@@ -28,7 +28,7 @@ describe('PubSub Helper tests', () => {
     it('Error on publish a message.', () => {
       const pubSubStub = sinon.fake.rejects();
       const topicPublishStub = sinon.stub(PubSub.prototype, 'topic')
-        .returns({publish: pubSubStub});
+          .returns({publish: pubSubStub});
       const message = 'Simple message';
 
       return new PubSubHelper()
