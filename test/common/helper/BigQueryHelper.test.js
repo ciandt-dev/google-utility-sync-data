@@ -1,4 +1,4 @@
-const expect = require('chai').expect;
+const {expect} = require('chai');
 const sinon = require('sinon');
 
 const {BigQuery} = require('@google-cloud/bigquery');
@@ -10,7 +10,7 @@ describe('BigQuery Helper tests', () => {
       sinon.restore();
     });
 
-    it('Get a job by id', () => {
+    it('Get a job by id', (done) => {
       const expected = {
         id: 'job-id',
       };
@@ -22,9 +22,10 @@ describe('BigQuery Helper tests', () => {
       const job = new BigQueryHelper()
           .getJob('job-id');
       expect(job).to.be.equals(expected);
+      done();
     });
 
-    it('Copy a view to a table', (done) => {
+    it('Copy a view to a table', () => {
       sinon.stub(
           BigQuery.prototype, 'dataset')
           .returns({
@@ -41,19 +42,20 @@ describe('BigQuery Helper tests', () => {
             }),
           });
 
-      sinon.stub(BigQuery.prototype, 'createQueryJob').resolves({});
+      sinon.stub(BigQuery.prototype, 'createQueryJob')
+          .resolves('Job 1234 created successfully.');
 
-      new BigQueryHelper()
+      return new BigQueryHelper()
           .copyView(
               'marcot', 'vw_user_anime_list_300k_200_watched_episodes',
               'marcot', 'jurema2'
           )
           .then((result) => {
-            done();
+            expect(result).to.equal('Job 1234 created successfully.');
           });
     });
 
-    it('Get BQ table metadada.', (done) => {
+    it('Get BQ table metadada.', () => {
       const getMetadataStub = sinon.stub(
           BigQuery.prototype, 'dataset')
           .returns({
@@ -62,12 +64,11 @@ describe('BigQuery Helper tests', () => {
             }),
           });
 
-      new BigQueryHelper()
+      return new BigQueryHelper()
           .isView('marcot', 'vw_user_anime_list_300k_200_watched_episodes')
           .then((result) => {
             expect(getMetadataStub.calledOnce).to.be.true;
             expect(result).to.be.true;
-            done();
           });
     });
 
@@ -77,7 +78,7 @@ describe('BigQuery Helper tests', () => {
 
       sinon.replace(BigQuery.prototype, 'query', bigqueryStub);
 
-      new BigQueryHelper()
+      return new BigQueryHelper()
           .query(query, 'US')
           .then(() => {
             expect(bigqueryStub.calledOnce).to.be.true;
@@ -91,7 +92,7 @@ describe('BigQuery Helper tests', () => {
         }),
       });
 
-      new BigQueryHelper('dst-project-id')
+      return new BigQueryHelper('dst-project-id')
           .copyTable(
               'src-project-id', 'src-dataset-id', 'src-table-id',
               'dst-dataset-id', 'dst-table-id'

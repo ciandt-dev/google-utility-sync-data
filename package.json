@@ -1,6 +1,6 @@
 {
   "name": "google-utility-sync-data",
-  "version": "1.1.19",
+  "version": "1.1.20",
   "description": "Utilities to work with async data on google platform.",
   "main": "./src/index.js",
   "scripts": {
@@ -30,17 +30,17 @@
   ],
   "devDependencies": {
     "chai": "^4.2.0",
-    "eslint": "^5.7.0",
-    "eslint-config-google": "^0.11.0",
-    "mocha": "^6.0.2",
-    "nyc": "^13.3.0",
-    "sinon": "^7.2.4"
+    "eslint": "^6.1.0",
+    "eslint-config-google": "^0.13.0",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "sinon": "^7.3.2"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^4.1.4",
-    "@google-cloud/datastore": "^3.0.0",
+    "@google-cloud/bigquery": "^4.1.5",
+    "@google-cloud/datastore": "^4.1.4",
     "@google-cloud/firestore": "^0.21.0",
     "@google-cloud/pubsub": "^0.30.1",
-    "googleapis": "^38.0.0"
+    "googleapis": "^41.0.1"
   }
 }
