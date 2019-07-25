@@ -42,7 +42,8 @@ describe('BigQuery Helper tests', () => {
             }),
           });
 
-      sinon.stub(BigQuery.prototype, 'createQueryJob').resolves('Job 1234 created successfully.');
+      sinon.stub(BigQuery.prototype, 'createQueryJob')
+          .resolves('Job 1234 created successfully.');
 
       return new BigQueryHelper()
           .copyView(

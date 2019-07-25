@@ -64,7 +64,7 @@ describe('Datastore Helper tests', () => {
       const keys = ['1', '2', '3'];
 
       sinon.stub(Datastore.prototype, 'delete')
-        .rejects(new Error('The delete failed.'));
+          .rejects(new Error('The delete failed.'));
 
       return new DatastoreHelper('dst-namespace')
           .deleteEntitiesEngine(keys)
@@ -77,7 +77,7 @@ describe('Datastore Helper tests', () => {
 
     it('Saves an entity on datastore should thrown an error.', () => {
       const datastoreStub = sinon.stub(Datastore.prototype, 'upsert')
-        .rejects(new Error('The save failed.'));
+          .rejects(new Error('The save failed.'));
 
       const entity = {
         name: 'testing',
@@ -161,7 +161,7 @@ describe('Datastore Helper tests', () => {
       };
 
       const datastoreStub = sinon.stub(Datastore.prototype, 'createQuery')
-        .returns({filter: sinon.fake.resolves(entity)});
+          .returns({filter: sinon.fake.resolves(entity)});
 
       return new DatastoreHelper('dst-namespace')
           .filter('Kind', 'name', 'testing')

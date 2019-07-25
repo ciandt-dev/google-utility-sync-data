@@ -62,7 +62,7 @@ describe('PubSub Helper tests', () => {
     it('Publish an error message with a code.', () => {
       const pubSubStub = sinon.fake.resolves({});
       const topicPublishStub = sinon.stub(PubSub.prototype, 'topic')
-        .returns({publish: pubSubStub});
+          .returns({publish: pubSubStub});
       const error = {code: 5, message: 'An error messages'};
 
       sinon.replace(console, 'info', consoleLogFake);
