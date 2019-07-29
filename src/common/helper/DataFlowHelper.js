@@ -52,6 +52,7 @@ class DataFlowHelper {
           pubSubErrorNotificationTopic: `projects/${project}/topics/handleErrors`,
           pubSubSuccessNotificationTopic: `projects/${project}/topics/postExecution`,
           columnsToConsiderInKeywords: context.columnsToConsiderInKeywords,
+          minTokenSize: context.minTokenSize,
         },
         environment: {
           tempLocation: `gs://${bucket}/temp`,
