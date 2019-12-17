@@ -19,6 +19,14 @@ class BigQueryHelper {
   constructor(obj) {
     const _obj = obj ? obj : {};
     const options = _obj.projectId ? {projectId: _obj.projectId} : {};
+
+    this.scopes = [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/drive',
+      'https://www.googleapis.com/auth/cloud-platform',
+    ];
+
+    options.scopes = this.scopes;
     this.bigquery = new BigQuery(options);
 
     this.log = _obj.kind && _obj.logEnvironment ?
@@ -43,11 +51,11 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcTableId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      return new BigQuery({projectId: srcProjectId})
+      return new BigQuery({projectId: srcProjectId, scopes: this.scopes})
           .dataset(srcDatasetId)
           .table(srcTableId)
           .copy(
-              new BigQuery({projectId: dstProjectId})
+              new BigQuery({projectId: dstProjectId, scopes: this.scopes})
                   .dataset(dstDatasetId)
                   .table(dstTableId)
           )
@@ -121,7 +129,7 @@ class BigQueryHelper {
    * @return {Promise}
    */
   metadata(projectId, datasetId, tableId) {
-    return new BigQuery({projectId: projectId})
+    return new BigQuery({projectId: projectId, scopes: this.scopes})
         .dataset(datasetId)
         .table(tableId)
         .getMetadata();
@@ -163,7 +171,7 @@ class BigQueryHelper {
             this.createQueryJob({
               query: view.query,
               useLegacySql: view.useLegacySql,
-              destination: new BigQuery({projectId: dstProjectId})
+              destination: new BigQuery({projectId: dstProjectId, scopes: this.scopes})
                   .dataset(dstDatasetId)
                   .table(dstTableId),
             }).then(resolve).catch(reject);
@@ -229,7 +237,7 @@ class BigQueryHelper {
    * @return {Promise}
    */
   delete(projectId, datasetId, tableId) {
-    return new BigQuery({projectId: projectId})
+    return new BigQuery({projectId: projectId, scopes: this.scopes})
         .dataset(datasetId)
         .table(tableId)
         .delete();
