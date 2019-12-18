@@ -241,7 +241,7 @@ class BigQueryHelper {
         this.isExternal(srcProjectId, srcDatasetId, srcResourceId),
       ]).then((result) => {
         if (result[0] == false && result[1] == false) { // In Case view
-          this.log.logInfo(`${PREFIX} Copy view :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`);
+          this.log.logInfo(`${PREFIX} Copy view :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`);
           this.copyView(
               srcProjectId, srcDatasetId, srcResourceId,
               dstProjectId, dstDatasetId, dstTableId
@@ -250,7 +250,7 @@ class BigQueryHelper {
         }
 
         if (result[0] == false && result[1] == true) { // In Case External Table
-          this.log.logInfo(`${PREFIX} Copy External :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`);
+          this.log.logInfo(`${PREFIX} Copy External :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`);
           this.copyExternal(
               srcProjectId, srcDatasetId, srcResourceId,
               dstDatasetId, dstTableId
@@ -259,7 +259,7 @@ class BigQueryHelper {
         }
 
         if (result[0] == false && result[1] == false) { // In case regular table
-          this.log.logInfo(`${PREFIX} Copy table :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`);
+          this.log.logInfo(`${PREFIX} Copy table :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`);
           this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
               dstProjectId, dstDatasetId, dstTableId
           ).then(resolve).catch(reject);
@@ -268,7 +268,7 @@ class BigQueryHelper {
         if (result[0] == true && result[1] == true) { // Non exist
           const errorMessage = `It\'s not possible a resource be a view and 
           external table at the same time! There is something wrong 
-          with your table :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`;
+          with your table :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`;
           reject(new Error(errorMessage));
         }
       }).catch(reject);
