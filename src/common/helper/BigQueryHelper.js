@@ -153,6 +153,24 @@ class BigQueryHelper {
   }
 
   /**
+   * Get metada from a table and check if the
+   * table is from external source (Spreadsheet)
+   * @param {String} projectId
+   * @param {String} datasetId
+   * @param {String} objectId
+   * @return {Promise}
+   */
+  isExternal(projectId, datasetId, objectId) {
+    return new Promise((resolve, reject) => {
+      this.metadata(projectId, datasetId, objectId)
+          .then((data) => {
+            resolve(data[0].type === 'EXTERNAL');
+          })
+          .catch(reject);
+    });
+  }
+
+  /**
    * Get metada from a table
    * @param {String} srcProjectId
    * @param {String} srcDatasetId
@@ -180,6 +198,30 @@ class BigQueryHelper {
   }
 
   /**
+   * Copy table of external kind
+   * @param {String} srcProjectId
+   * @param {String} srcDatasetId
+   * @param {String} srcExternalTable
+   * @param {String} dstDatasetId
+   * @param {String} dstTableId
+   * @return {Promise}
+   */
+  copyExternal(srcProjectId, srcDatasetId, srcExternalTable,
+      dstDatasetId, dstTableId) {
+    const _query = `select * from 
+    ${srcProjectId}.${srcDatasetId}.${srcExternalTable}`;
+
+    return new Promise((resolve, reject) => {
+      this.bigquery.createQueryJob({
+        query: _query,
+        destination: this.bigquery
+            .dataset(dstDatasetId)
+            .table(dstTableId),
+      }).then(resolve).catch(reject);
+    });
+  }
+
+  /**
    * Copy Resource (View or Table) from a dataset.
    * @param {String} srcProjectId Source Project ID.
    * @param {String} srcDatasetId Source table dataset id.
@@ -193,20 +235,42 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcResourceId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      this.isView(srcProjectId, srcDatasetId, srcResourceId)
-          .then((isResourceView) => {
-            if (isResourceView) {
-              this.copyView(
-                  srcProjectId, srcDatasetId, srcResourceId,
-                  dstProjectId, dstDatasetId, dstTableId
-              ).then(this.checkCopyViewJobStatus)
-                  .then(resolve).catch(reject);
-            } else {
-              this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
-                  dstProjectId, dstDatasetId, dstTableId
-              ).then(resolve).catch(reject);
-            }
-          }).catch(reject);
+      const PREFIX='[BIGQUERY][COPY_RESOURCE] ';
+      Promise.all([
+        this.isView(srcProjectId, srcDatasetId, srcResourceId),
+        this.isExternal(srcProjectId, srcDatasetId, srcResourceId),
+      ]).then((result) => {
+        if (result[0] == false && result[1] == false) { // In Case view
+          this.log.logInfo(`${PREFIX} Copy view :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`);
+          this.copyView(
+              srcProjectId, srcDatasetId, srcResourceId,
+              dstProjectId, dstDatasetId, dstTableId
+          ).then(this.checkCopyViewJobStatus)
+              .then(resolve).catch(reject);
+        }
+
+        if (result[0] == false && result[1] == true) { // In Case External Table
+          this.log.logInfo(`${PREFIX} Copy External :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`);
+          this.copyExternal(
+              srcProjectId, srcDatasetId, srcResourceId,
+              dstDatasetId, dstTableId
+          ).then(resolve).catch(reject);
+        }
+
+        if (result[0] == false && result[1] == false) { // In case regular table
+          this.log.logInfo(`${PREFIX} Copy table :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`);
+          this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
+              dstProjectId, dstDatasetId, dstTableId
+          ).then(resolve).catch(reject);
+        }
+
+        if (result[0] == true && result[1] == true) { // Non exist
+          const errorMessage = `It\'s not possible a resource be a view and 
+          external table at the same time! There is something wrong 
+          with your table :: ${srcProjectId}.${srcDatasetId}.${srcTableId}`;
+          reject(new Error(errorMessage));
+        }
+      }).catch(reject);
     });
   }
 

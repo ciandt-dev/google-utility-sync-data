@@ -55,6 +55,35 @@ describe('BigQuery Helper tests', () => {
           });
     });
 
+    it('Copy a external table to a regular table', () => {
+      sinon.stub(
+          BigQuery.prototype, 'dataset')
+          .returns({
+            table: sinon.fake.returns({
+              getMetadata: sinon.fake.resolves(
+                  [{
+                    view: {
+                      type: 'EXTERNAL',
+                      query: 'SELECT * FROM Table1',
+                      useLegacySql: true,
+                    },
+                  }]
+              ),
+            }),
+          });
+
+      sinon.stub(BigQuery.prototype, 'createQueryJob')
+          .resolves('Job 1234 created successfully.');
+
+      return new BigQueryHelper()
+          .copyExternal(
+              'prjx', 'rms', 'vw_user_anime_list_300k_200_watched_episodes', 'rms', 'future'
+          )
+          .then((result) => {
+            expect(result).to.equal('Job 1234 created successfully.');
+          });
+    });
+
     it('Get BQ table metadada.', () => {
       const getMetadataStub = sinon.stub(
           BigQuery.prototype, 'dataset')
@@ -66,6 +95,23 @@ describe('BigQuery Helper tests', () => {
 
       return new BigQueryHelper()
           .isView('marcot', 'vw_user_anime_list_300k_200_watched_episodes')
+          .then((result) => {
+            expect(getMetadataStub.calledOnce).to.be.true;
+            expect(result).to.be.true;
+          });
+    });
+
+    it('Get BQ table metadada and check if is external table.', () => {
+      const getMetadataStub = sinon.stub(
+          BigQuery.prototype, 'dataset')
+          .returns({
+            table: sinon.fake.returns({
+              getMetadata: sinon.fake.resolves([{type: 'EXTERNAL'}]),
+            }),
+          });
+
+      return new BigQueryHelper()
+          .isExternal('rms', 'vw_user_anime_list_300k_200_watched_episodes')
           .then((result) => {
             expect(getMetadataStub.calledOnce).to.be.true;
             expect(result).to.be.true;
