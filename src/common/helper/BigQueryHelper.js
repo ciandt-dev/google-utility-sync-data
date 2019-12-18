@@ -235,12 +235,12 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcResourceId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      const PREFIX='[BIGQUERY][COPY_RESOURCE] ';
       Promise.all([
         this.isView(srcProjectId, srcDatasetId, srcResourceId),
         this.isExternal(srcProjectId, srcDatasetId, srcResourceId),
       ]).then((result) => {
-        if (result[0] == false && result[1] == false) { // In Case view
+        const PREFIX=`[BIGQUERY][COPY_RESOURCE][${result}]`;
+        if (result[0] == true && result[1] == false) { // In Case view
           this.log.logInfo(`${PREFIX} Copy view :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`);
           this.copyView(
               srcProjectId, srcDatasetId, srcResourceId,
