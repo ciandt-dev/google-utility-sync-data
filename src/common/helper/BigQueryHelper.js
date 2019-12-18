@@ -209,7 +209,7 @@ class BigQueryHelper {
   copyExternal(srcProjectId, srcDatasetId, srcExternalTable,
       dstDatasetId, dstTableId) {
     const _query = `select * from 
-    ${srcProjectId}.${srcDatasetId}.${srcExternalTable}`;
+    \`${srcProjectId}.${srcDatasetId}.${srcExternalTable}\``;
 
     return new Promise((resolve, reject) => {
       this.bigquery.createQueryJob({
