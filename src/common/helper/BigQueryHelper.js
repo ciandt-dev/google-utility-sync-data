@@ -254,7 +254,8 @@ class BigQueryHelper {
           this.copyExternal(
               srcProjectId, srcDatasetId, srcResourceId,
               dstDatasetId, dstTableId
-          ).then(resolve).catch(reject);
+          ).then(this.checkCopyViewJobStatus)
+              .then(resolve).catch(reject);
         }
 
         if (result[0] == false && result[1] == false) { // In case regular table
