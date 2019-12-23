@@ -23,7 +23,8 @@ class LogUtil {
   logFactory(context, message) {
     const connector = context.connector ? `[${context.connector.id}]` : '';
     const timestamp = context.timestamp ? `[${context.timestamp}]` : '';
-    const toLog = `[${this.kind.toUpperCase()}][${context.type.toUpperCase()}]${timestamp} ${connector} ${message}.`; // eslint-disable-line
+    const _type = context.type ? context.type.toUpperCase() : 'NONE';
+    const toLog = `[${this.kind.toUpperCase()}][${_type}]${timestamp} ${connector} ${message}.`; // eslint-disable-line
     return toLog;
   };
 
