@@ -19,6 +19,14 @@ class BigQueryHelper {
   constructor(obj) {
     const _obj = obj ? obj : {};
     const options = _obj.projectId ? {projectId: _obj.projectId} : {};
+
+    this.scopes = [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/drive',
+      'https://www.googleapis.com/auth/cloud-platform',
+    ];
+
+    options.scopes = this.scopes;
     this.bigquery = new BigQuery(options);
 
     this.log = _obj.kind && _obj.logEnvironment ?
@@ -43,11 +51,11 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcTableId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      return new BigQuery({projectId: srcProjectId})
+      return new BigQuery({projectId: srcProjectId, scopes: this.scopes})
           .dataset(srcDatasetId)
           .table(srcTableId)
           .copy(
-              new BigQuery({projectId: dstProjectId})
+              new BigQuery({projectId: dstProjectId, scopes: this.scopes})
                   .dataset(dstDatasetId)
                   .table(dstTableId)
           )
@@ -100,7 +108,7 @@ class BigQueryHelper {
     return new Promise((resolve, reject) => {
       const job = results[0];
       if (!job) {
-        reject('Missing job.');
+        reject(new Error('Missing job.'));
       }
 
       // Check the job's status for errors
@@ -121,7 +129,7 @@ class BigQueryHelper {
    * @return {Promise}
    */
   metadata(projectId, datasetId, tableId) {
-    return new BigQuery({projectId: projectId})
+    return new BigQuery({projectId: projectId, scopes: this.scopes})
         .dataset(datasetId)
         .table(tableId)
         .getMetadata();
@@ -139,6 +147,24 @@ class BigQueryHelper {
       this.metadata(projectId, datasetId, objectId)
           .then((data) => {
             resolve(data[0].type === 'VIEW');
+          })
+          .catch(reject);
+    });
+  }
+
+  /**
+   * Get metada from a table and check if the
+   * table is from external source (Spreadsheet)
+   * @param {String} projectId
+   * @param {String} datasetId
+   * @param {String} objectId
+   * @return {Promise}
+   */
+  isExternal(projectId, datasetId, objectId) {
+    return new Promise((resolve, reject) => {
+      this.metadata(projectId, datasetId, objectId)
+          .then((data) => {
+            resolve(data[0].type === 'EXTERNAL');
           })
           .catch(reject);
     });
@@ -163,11 +189,35 @@ class BigQueryHelper {
             this.createQueryJob({
               query: view.query,
               useLegacySql: view.useLegacySql,
-              destination: new BigQuery({projectId: dstProjectId})
+              destination: new BigQuery({projectId: dstProjectId, scopes: this.scopes})
                   .dataset(dstDatasetId)
                   .table(dstTableId),
             }).then(resolve).catch(reject);
           }).catch(reject);
+    });
+  }
+
+  /**
+   * Copy table of external kind
+   * @param {String} srcProjectId
+   * @param {String} srcDatasetId
+   * @param {String} srcExternalTable
+   * @param {String} dstDatasetId
+   * @param {String} dstTableId
+   * @return {Promise}
+   */
+  copyExternal(srcProjectId, srcDatasetId, srcExternalTable,
+      dstDatasetId, dstTableId) {
+    const _query = `select * from 
+    \`${srcProjectId}.${srcDatasetId}.${srcExternalTable}\``;
+
+    return new Promise((resolve, reject) => {
+      this.bigquery.createQueryJob({
+        query: _query,
+        destination: this.bigquery
+            .dataset(dstDatasetId)
+            .table(dstTableId),
+      }).then(resolve).catch(reject);
     });
   }
 
@@ -185,20 +235,43 @@ class BigQueryHelper {
       srcProjectId, srcDatasetId, srcResourceId,
       dstProjectId, dstDatasetId, dstTableId) {
     return new Promise((resolve, reject) => {
-      this.isView(srcProjectId, srcDatasetId, srcResourceId)
-          .then((isResourceView) => {
-            if (isResourceView) {
-              this.copyView(
-                  srcProjectId, srcDatasetId, srcResourceId,
-                  dstProjectId, dstDatasetId, dstTableId
-              ).then(this.checkCopyViewJobStatus)
-                  .then(resolve).catch(reject);
-            } else {
-              this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
-                  dstProjectId, dstDatasetId, dstTableId
-              ).then(resolve).catch(reject);
-            }
-          }).catch(reject);
+      Promise.all([
+        this.isView(srcProjectId, srcDatasetId, srcResourceId),
+        this.isExternal(srcProjectId, srcDatasetId, srcResourceId),
+      ]).then((result) => {
+        const PREFIX=`[BIGQUERY][COPY_RESOURCE][${result}]`;
+        if (result[0] == true && result[1] == false) { // In Case view
+          this.log.logInfo(`${PREFIX} Copy view :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`);
+          this.copyView(
+              srcProjectId, srcDatasetId, srcResourceId,
+              dstProjectId, dstDatasetId, dstTableId
+          ).then(this.checkCopyViewJobStatus)
+              .then(resolve).catch(reject);
+        }
+
+        if (result[0] == false && result[1] == true) { // In Case External Table
+          this.log.logInfo(`${PREFIX} Copy External :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`);
+          this.copyExternal(
+              srcProjectId, srcDatasetId, srcResourceId,
+              dstDatasetId, dstTableId
+          ).then(this.checkCopyViewJobStatus)
+              .then(resolve).catch(reject);
+        }
+
+        if (result[0] == false && result[1] == false) { // In case regular table
+          this.log.logInfo(`${PREFIX} Copy table :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`);
+          this.copyTable(srcProjectId, srcDatasetId, srcResourceId,
+              dstProjectId, dstDatasetId, dstTableId
+          ).then(resolve).catch(reject);
+        }
+
+        if (result[0] == true && result[1] == true) { // Non exist
+          const errorMessage = `It\'s not possible a resource be a view and 
+          external table at the same time! There is something wrong 
+          with your table :: ${srcProjectId}.${srcDatasetId}.${srcResourceId}`;
+          reject(new Error(errorMessage));
+        }
+      }).catch(reject);
     });
   }
 
@@ -229,7 +302,7 @@ class BigQueryHelper {
    * @return {Promise}
    */
   delete(projectId, datasetId, tableId) {
-    return new BigQuery({projectId: projectId})
+    return new BigQuery({projectId: projectId, scopes: this.scopes})
         .dataset(datasetId)
         .table(tableId)
         .delete();
