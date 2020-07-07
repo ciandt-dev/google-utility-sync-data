@@ -50,7 +50,9 @@ class LogUtil {
   logError(context, message, err) {
     const toLog = this.logFactory(context, message);
     if (this.logEnvironment!== 'test') {
-      err ? console.error(toLog, err) : console.error(toLog, context);
+      err ?
+      console.error(toLog, JSON.stringify(err)) :
+      console.error(toLog, JSON.stringify(context));
     }
   };
 }
