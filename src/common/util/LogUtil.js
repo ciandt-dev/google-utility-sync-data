@@ -37,7 +37,7 @@ class LogUtil {
   logInfo(context, message, obj) {
     const toLog = this.logFactory(context, message);
     if (this.logEnvironment!== 'test') {
-      obj ? console.info(toLog, obj.toString()) : console.info(toLog, context.toString());
+      obj ? console.info(toLog, JSON.stringify(obj)) : console.info(toLog, JSON.stringify(context));
     }
   };
 
