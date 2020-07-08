@@ -37,7 +37,7 @@ class LogUtil {
   logInfo(context, message, obj) {
     const toLog = this.logFactory(context, message);
     if (this.logEnvironment!== 'test') {
-      obj ? console.info(toLog, obj) : console.info(toLog, context);
+      obj ? console.info(toLog, JSON.stringify(obj)) : console.info(toLog, JSON.stringify(context));
     }
   };
 
@@ -50,7 +50,9 @@ class LogUtil {
   logError(context, message, err) {
     const toLog = this.logFactory(context, message);
     if (this.logEnvironment!== 'test') {
-      err ? console.error(toLog, err) : console.error(toLog, context);
+      err ?
+      console.error(toLog, JSON.stringify(err)) :
+      console.error(toLog, JSON.stringify(context));
     }
   };
 }
